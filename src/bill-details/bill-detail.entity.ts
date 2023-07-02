@@ -8,6 +8,7 @@ import {
     ManyToOne,
     JoinColumn,
     PrimaryColumn,
+    PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Bill } from '../bills/bills.entity';
 import { Service } from '../services/service.entity';
@@ -19,7 +20,7 @@ export class BillDetail {
         Object.assign(this, data);
     }
 
-    @PrimaryColumn({ type: 'uuid' })
+    @PrimaryGeneratedColumn('uuid')
     id: string
 
     @Column()

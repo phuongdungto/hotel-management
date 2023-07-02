@@ -5,6 +5,7 @@ import {
     ManyToOne,
     JoinColumn,
     Relation,
+    PrimaryGeneratedColumn,
 } from 'typeorm';
 import { RoomReservation } from '../room-reservation/room-reservation.entity';
 import { Rooms } from '../rooms/room.entity';
@@ -15,7 +16,7 @@ export class RoomReservationDetail {
         Object.assign(this, data);
     }
 
-    @PrimaryColumn({ type: 'uuid' })
+    @PrimaryGeneratedColumn('uuid')
     id: string
 
     @ManyToOne(() => RoomReservation, roomReservation => roomReservation.roomReservationDetails)

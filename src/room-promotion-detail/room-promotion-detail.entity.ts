@@ -5,6 +5,7 @@ import {
     JoinColumn,
     Relation,
     Column,
+    PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Rooms } from '../rooms/room.entity';
 import { RoomPromotion } from '../room-promotion/room-promotion.entity';
@@ -15,7 +16,7 @@ export class RoomPromotionDetails {
         Object.assign(this, data);
     }
 
-    @PrimaryColumn({ type: 'uuid' })
+    @PrimaryGeneratedColumn('uuid')
     id: string
 
     @ManyToOne(() => RoomPromotion, roomPromotion => roomPromotion.roomPromotionDetails)
