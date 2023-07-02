@@ -8,6 +8,7 @@ import {
     ManyToOne,
     JoinColumn,
     PrimaryColumn,
+    PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../users/users.entity';
 import { Providers } from '../providers/provider.entity';
@@ -20,7 +21,7 @@ export class PurchasesOrderDetail {
         Object.assign(this, data);
     }
 
-    @PrimaryColumn({ type: 'uuid' })
+    @PrimaryGeneratedColumn('uuid')
     id: string
 
     @Column()

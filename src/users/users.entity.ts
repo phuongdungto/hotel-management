@@ -30,13 +30,13 @@ export class User extends baseEntity {
     nationalId: string
 
     @Column()
-    salary: string
+    salary: number
 
     @Column()
     address: string;
 
     @Column()
-    birthday: string;
+    birthday: Date;
 
     @Column({
         name: 'gender',
@@ -54,7 +54,7 @@ export class User extends baseEntity {
     })
     role: string;
 
-    @Column()
+    @Column({ unique: true })
     username: string
 
     @Column()

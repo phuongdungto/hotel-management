@@ -1,10 +1,17 @@
-import { Resolver, Query, Mutation, Args } from "@nestjs/graphql";
-import { userType } from "./users.type";
+import { Resolver, Query, Mutation, Args, Context } from "@nestjs/graphql";
+import { Req, UseGuards } from "@nestjs/common/decorators";
+import { userType } from "./users.types";
 import { usersService } from "./users.service";
 import { User } from "./users.entity";
 import { createUserInput } from "./users.input";
+import { Role } from "../decorators/roles.decorator";
+import { Roles } from "../core/enum";
+import { AuthGuard } from "../auth/auth.guard";
+import { Request } from "express";
+import { ReqUser } from "./interfaces/user.interface";
+import { RolesGuard } from "../auth/role.guard";
 
-@Resolver(of => userType)
+@Resolver()
 export class userResolver {
     constructor(
         private userService: usersService
@@ -17,11 +24,8 @@ export class userResolver {
     }
 
     @Mutation(returns => userType)
-    async createUser(@Args('createUserInput') input: createUserInput): Promise<User> {
-        try {
-            return await this.userService.createUser(input);
-        } catch (error) {
-            console.log(error)
-        }
+    @UseGuards(AuthGuard, new RolesGuard([Roles.ADMIN, Roles.MANAGER]))
+    async createUser(@Args('createUserInput') input: createUserInput, @Context("user") user: ReqUser): Promise<User> {
+        return await this.userService.createUser(input);
     }
 }
