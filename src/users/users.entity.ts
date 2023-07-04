@@ -1,5 +1,5 @@
 import { RoomReservation } from '../room-reservation/room-reservation.entity';
-import { baseEntity } from '../core/entities/base.entity';
+import { baseEntity } from '../core/extends/base.entity';
 import { Gender, Roles } from '../core/enum';
 import {
     Entity,
@@ -9,35 +9,45 @@ import {
 } from 'typeorm';
 import { PurchasesOrder } from '../purchase-order/purchase-order.entity';
 import { Bill } from '../bills/bills.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @Entity('users')
+@ObjectType()
 export class User extends baseEntity {
-    constructor(data: Partial<User>) {
+    constructor(data?: Partial<User>) {
         super();
         Object.assign(this, data);
     }
 
     @Column()
+    @Field()
     firstname: string
 
+    @Field()
     @Column()
     lastname: string
 
+    @Field()
     @Column()
     numberPhone: string;
 
+    @Field()
     @Column({ unique: true })
     nationalId: string
 
+    @Field()
     @Column()
     salary: number
 
+    @Field()
     @Column()
     address: string;
 
+    @Field()
     @Column()
     birthday: Date;
 
+    @Field()
     @Column({
         name: 'gender',
         type: 'enum',
@@ -45,6 +55,7 @@ export class User extends baseEntity {
     })
     gender: string;
 
+    @Field()
     @Column({
         name: 'role',
         type: 'enum',
@@ -54,6 +65,7 @@ export class User extends baseEntity {
     })
     role: string;
 
+    @Field()
     @Column({ unique: true })
     username: string
 

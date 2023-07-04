@@ -1,12 +1,8 @@
-import { Injectable, ExecutionContext, CanActivate, UnauthorizedException } from '@nestjs/common';
-import { AuthGuard as NestAuthGuard } from '@nestjs/passport';
+import { Injectable, ExecutionContext, CanActivate } from '@nestjs/common';
 import { GqlExecutionContext } from "@nestjs/graphql";
-import { usersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import * as dotenv from "dotenv";
 import { ReqUser } from '../users/interfaces/user.interface';
-dotenv.config();
-
+import { AuthenticationError } from 'apollo-server-express'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -21,7 +17,7 @@ export class AuthGuard implements CanActivate {
             const ctx = GqlExecutionContext.create(context).getContext();
             const token = ctx.req.headers.authorization;
             if (!token || !token.startsWith('Bearer')) {
-                throw new UnauthorizedException('Token schema is invalid or missing');
+                throw new AuthenticationError('Token schema is invalid or missing');
             };
 
             const accessToken = token.replace('Bearer ', '');
@@ -33,9 +29,9 @@ export class AuthGuard implements CanActivate {
                 }
             ) as ReqUser;
             ctx.user = user;
-            return true;
         } catch (error) {
-            throw new UnauthorizedException(error);
+            throw new AuthenticationError(error);
         }
+        return true;
     }
 }

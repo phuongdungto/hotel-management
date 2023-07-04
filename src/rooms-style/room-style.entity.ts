@@ -1,4 +1,4 @@
-import { baseEntity } from '../core/entities/base.entity';
+import { baseEntity } from '../core/extends/base.entity';
 import { Rooms } from '../rooms/room.entity';
 import {
     Entity,

@@ -1,8 +1,7 @@
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Roles } from '../core/enum';
-import { ROLES_KEY } from '../decorators/roles.decorator';
 import { GqlExecutionContext } from '@nestjs/graphql';
+import { ForbiddenError } from 'apollo-server-express';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -15,7 +14,7 @@ export class RolesGuard implements CanActivate {
         const ctx = GqlExecutionContext.create(context).getContext();
         const { role } = ctx.user;
         if (this.roles.length && !this.roles.some((roles) => roles === role)) {
-            throw new ForbiddenException('Forbidden accessible');
+            throw new ForbiddenError('Forbidden accessible');
         }
         return true;
     }

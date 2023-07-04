@@ -1,5 +1,5 @@
 import { RoomReservation } from '../room-reservation/room-reservation.entity';
-import { baseEntity } from '../core/entities/base.entity';
+import { baseEntity } from '../core/extends/base.entity';
 import { Roles } from '../core/enum';
 import {
     Entity,
@@ -11,7 +11,7 @@ import {
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../users/users.entity';
-import { Providers } from '../providers/provider.entity';
+import { Providers } from '../providers/providers.entity';
 import { PurchasesOrder } from '../purchase-order/purchase-order.entity';
 import { Goods } from '../goods/goods.entity';
 

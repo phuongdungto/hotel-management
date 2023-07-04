@@ -1,5 +1,5 @@
 import { RoomReservation } from '../room-reservation/room-reservation.entity';
-import { baseEntity } from '../core/entities/base.entity';
+import { baseEntity } from '../core/extends/base.entity';
 import { Roles } from '../core/enum';
 import {
     Entity,

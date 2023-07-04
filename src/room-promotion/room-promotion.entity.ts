@@ -4,7 +4,7 @@ import {
     OneToMany,
     Relation,
 } from 'typeorm';
-import { baseEntity } from '../core/entities/base.entity';
+import { baseEntity } from '../core/extends/base.entity';
 import { RoomPromotionDetails } from '../room-promotion-detail/room-promotion-detail.entity';
 
 @Entity('room_promotions')
