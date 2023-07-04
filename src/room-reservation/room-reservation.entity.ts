@@ -1,5 +1,5 @@
-import { Customer } from '../customers/customer.entity';
-import { baseEntity } from '../core/entities/base.entity';
+import { Customer } from '../customers/customers.entity';
+import { baseEntity } from '../core/extends/base.entity';
 import {
     Entity,
     Column,

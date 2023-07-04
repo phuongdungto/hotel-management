@@ -1,12 +1,12 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Init1687955699185 implements MigrationInterface {
-    name = 'Init1687955699185'
+export class Init1688384759682 implements MigrationInterface {
+    name = 'Init1688384759682'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
             CREATE TABLE \`customers\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
                 \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
                 \`deleted_at\` datetime(6) NULL,
@@ -15,7 +15,7 @@ export class Init1687955699185 implements MigrationInterface {
                 \`lastname\` varchar(255) NOT NULL,
                 \`number_phone\` varchar(255) NOT NULL,
                 \`address\` varchar(255) NOT NULL,
-                \`birthday\` varchar(255) NOT NULL,
+                \`birthday\` datetime NOT NULL,
                 \`gender\` varchar(255) NOT NULL,
                 UNIQUE INDEX \`IDX_81cef023276a6e88202edaae64\` (\`national_id\`),
                 PRIMARY KEY (\`id\`)
@@ -23,20 +23,19 @@ export class Init1687955699185 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE TABLE \`providers\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
                 \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
                 \`deleted_at\` datetime(6) NULL,
                 \`name\` varchar(255) NOT NULL,
                 \`address\` varchar(255) NOT NULL,
                 \`number_phone\` varchar(255) NOT NULL,
-                \`password\` varchar(255) NOT NULL,
                 PRIMARY KEY (\`id\`)
             ) ENGINE = InnoDB
         `);
         await queryRunner.query(`
             CREATE TABLE \`goods\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
                 \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
                 \`deleted_at\` datetime(6) NULL,
@@ -49,7 +48,7 @@ export class Init1687955699185 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE TABLE \`purchases_order_details\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`total\` int NOT NULL,
                 \`purchase_order_id\` varchar(255) NOT NULL,
                 \`goods_id\` varchar(255) NOT NULL,
@@ -58,7 +57,7 @@ export class Init1687955699185 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE TABLE \`purchases_order\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
                 \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
                 \`deleted_at\` datetime(6) NULL,
@@ -70,7 +69,7 @@ export class Init1687955699185 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE TABLE \`users\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
                 \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
                 \`deleted_at\` datetime(6) NULL,
@@ -80,18 +79,19 @@ export class Init1687955699185 implements MigrationInterface {
                 \`national_id\` varchar(255) NOT NULL,
                 \`salary\` int NOT NULL,
                 \`address\` varchar(255) NOT NULL,
-                \`birthday\` varchar(255) NOT NULL,
+                \`birthday\` datetime NOT NULL,
                 \`gender\` enum ('male', 'female') NOT NULL,
                 \`role\` enum ('admin', 'manager', 'staff') NOT NULL DEFAULT 'staff',
                 \`username\` varchar(255) NOT NULL,
                 \`password\` varchar(255) NOT NULL,
                 UNIQUE INDEX \`IDX_232b9597ff9a89b2c2fc5d1b5e\` (\`national_id\`),
+                UNIQUE INDEX \`IDX_fe0bb3f6520ee0469504521e71\` (\`username\`),
                 PRIMARY KEY (\`id\`)
             ) ENGINE = InnoDB
         `);
         await queryRunner.query(`
             CREATE TABLE \`room_style\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
                 \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
                 \`deleted_at\` datetime(6) NULL,
@@ -101,7 +101,7 @@ export class Init1687955699185 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE TABLE \`room_promotions\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
                 \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
                 \`deleted_at\` datetime(6) NULL,
@@ -114,7 +114,7 @@ export class Init1687955699185 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE TABLE \`room_promotion_details\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`room_promotion_id\` varchar(255) NOT NULL,
                 \`room_id\` varchar(255) NOT NULL,
                 PRIMARY KEY (\`id\`)
@@ -122,7 +122,7 @@ export class Init1687955699185 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE TABLE \`rooms\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
                 \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
                 \`deleted_at\` datetime(6) NULL,
@@ -137,7 +137,7 @@ export class Init1687955699185 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE TABLE \`room_reservation_detail\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`room_reservation_id\` varchar(255) NOT NULL,
                 \`room_id\` varchar(255) NOT NULL,
                 PRIMARY KEY (\`id\`)
@@ -145,7 +145,7 @@ export class Init1687955699185 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE TABLE \`room_reservation\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
                 \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
                 \`deleted_at\` datetime(6) NULL,
@@ -161,7 +161,7 @@ export class Init1687955699185 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE TABLE \`bills\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
                 \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
                 \`deleted_at\` datetime(6) NULL,
@@ -172,7 +172,7 @@ export class Init1687955699185 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE TABLE \`service_promotions\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
                 \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
                 \`deleted_at\` datetime(6) NULL,
@@ -184,7 +184,7 @@ export class Init1687955699185 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE TABLE \`service_promotion_details\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`percent\` int NOT NULL,
                 \`service_promotion_id\` varchar(255) NOT NULL,
                 \`service_id\` varchar(255) NOT NULL,
@@ -193,7 +193,7 @@ export class Init1687955699185 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE TABLE \`bill_details\` (
-                \`id\` varchar(255) NOT NULL,
+                \`id\` varchar(36) NOT NULL,
                 \`price\` int NOT NULL,
                 \`number_of_services\` int NOT NULL,
                 \`total_price\` int NOT NULL,
@@ -418,6 +418,9 @@ export class Init1687955699185 implements MigrationInterface {
         `);
         await queryRunner.query(`
             DROP TABLE \`room_style\`
+        `);
+        await queryRunner.query(`
+            DROP INDEX \`IDX_fe0bb3f6520ee0469504521e71\` ON \`users\`
         `);
         await queryRunner.query(`
             DROP INDEX \`IDX_232b9597ff9a89b2c2fc5d1b5e\` ON \`users\`

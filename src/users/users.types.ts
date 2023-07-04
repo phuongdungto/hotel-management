@@ -1,4 +1,5 @@
 import { ObjectType, Field } from "@nestjs/graphql";
+import { User } from "./users.entity";
 
 @ObjectType()
 export class userType {
@@ -43,4 +44,13 @@ export class userType {
 
     @Field()
     deletedAt: string
+}
+
+@ObjectType()
+export class getUsersType {
+    @Field(() => [User])
+    users: User[]
+
+    @Field()
+    totalPage: number
 }

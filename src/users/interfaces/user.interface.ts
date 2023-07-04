@@ -2,6 +2,8 @@ import { Roles } from "../../core/enum";
 
 export interface ReqUser {
     id: number,
-    email: string,
-    role: Roles
+    username: string,
+    role: Roles,
+    firstname: string,
+    lastname: string
 }

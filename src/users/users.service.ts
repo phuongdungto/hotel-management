@@ -2,16 +2,16 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './users.entity';
 import { Repository } from 'typeorm';
-import { createUserInput } from './users.input';
+import { createUserInput, getUsersInput, updateUserInput } from './users.input';
 import * as bcrypt from 'bcrypt';
 import { ROUNDS_NUMBER } from '../core/constant'
-import { JwtService } from '@nestjs/jwt';
+import { getUsersType } from './users.types';
+import { BuildPagination } from '../core/utils/pagination.utils';
 
 @Injectable()
 export class usersService {
     constructor(
         @InjectRepository(User) private userRepo: Repository<User>,
-        private jwtService: JwtService
     ) {
 
     }
@@ -25,7 +25,7 @@ export class usersService {
         })
 
         if (exist) {
-            throw new BadRequestException('Username or NationalID existed.')
+            throw new BadRequestException('Username or NationalID already exists.')
         }
         user.password = await bcrypt.hash(user.password, ROUNDS_NUMBER);
         return await this.userRepo.save(user);
@@ -45,5 +45,36 @@ export class usersService {
             throw new NotFoundException('User not found.');
         }
         return user;
+    }
+
+    async updateUser(id: string, input: updateUserInput): Promise<User> {
+        const user = await this.userRepo.findOneBy({ id });
+        const exists = await this.userRepo.findOneBy({ nationalId: input.nationalId })
+        if (exists) {
+            throw new BadRequestException("NationalId already exists")
+        }
+        if (!user) {
+            throw new NotFoundException('User not found.');
+        }
+        Object.assign(user, input);
+        const newUser = await this.userRepo.save(user);
+        delete newUser.password;
+        return newUser
+    }
+
+    async deleteUser(id: string) {
+        const user = await this.userRepo.findOneBy({ id });
+        if (!user) {
+            throw new NotFoundException('User not found.');
+        }
+        await this.userRepo.softDelete(user.id)
+    }
+
+    async getUsers(input: getUsersInput): Promise<getUsersType> {
+        const query = BuildPagination(User, input);
+        const [rows, count] = await this.userRepo.findAndCount({
+            ...query
+        });
+        return { totalPage: Math.ceil(count / input.limit), users: rows };
     }
 }

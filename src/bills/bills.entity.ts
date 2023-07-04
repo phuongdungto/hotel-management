@@ -1,5 +1,5 @@
 import { RoomReservation } from '../room-reservation/room-reservation.entity';
-import { baseEntity } from '../core/entities/base.entity';
+import { baseEntity } from '../core/extends/base.entity';
 import { Roles } from '../core/enum';
 import {
     Entity,
@@ -10,7 +10,7 @@ import {
     OneToMany,
 } from 'typeorm';
 import { User } from '../users/users.entity';
-import { Providers } from '../providers/provider.entity';
+import { Providers } from '../providers/providers.entity';
 import { PurchasesOrderDetail } from '../purchase-order-details/purchase-order-details.entity';
 import { BillDetail } from '../bill-details/bill-detail.entity';
 
