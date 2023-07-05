@@ -9,7 +9,7 @@ import { RoomPromotionDetails } from '../room-promotion-detail/room-promotion-de
 
 @Entity('room_promotions')
 export class RoomPromotion extends baseEntity {
-    constructor(data: Partial<RoomPromotion>) {
+    constructor(data?: Partial<RoomPromotion>) {
         super();
         Object.assign(this, data);
     }

@@ -1,22 +1,22 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GoodsService } from './goods.service';
-import { getGoodsListType, goodsType } from './goods.types';
+import { getGoodsListType } from './goods.types';
 import { Goods } from './goods.entity';
 import { createGoodsInput, getGoodsListInput, updateGoodsInput } from './goods.input';
 import { responseUntil } from 'src/core/utils/response.utils';
 
-@Resolver()
+@Resolver(() => Goods)
 export class GoodsResolver {
     constructor(
         private goodsService: GoodsService
     ) { }
 
-    @Mutation(returns => goodsType)
+    @Mutation(returns => Goods)
     async createGoods(@Args('createGoodsInput') input: createGoodsInput): Promise<Goods> {
         return await this.goodsService.createGoods(input)
     }
 
-    @Mutation(returns => goodsType)
+    @Mutation(returns => Goods)
     async updateGoods(@Args('id') id: string, @Args('updateGoodsInput') input: updateGoodsInput): Promise<Goods> {
         return await this.goodsService.updateGoods(id, input)
     }
@@ -30,7 +30,7 @@ export class GoodsResolver {
         }
     }
 
-    @Query(returns => goodsType)
+    @Query(returns => Goods)
     async getGoods(@Args('id') id: string): Promise<Goods> {
         return await this.goodsService.getGoods(id);
     }

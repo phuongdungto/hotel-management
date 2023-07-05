@@ -16,7 +16,7 @@ import { ServicePromotion } from '../service-promotion/service-promotion.entity'
 
 @Entity('bill_details')
 export class BillDetail {
-    constructor(data: Partial<BillDetail>) {
+    constructor(data?: Partial<BillDetail>) {
         Object.assign(this, data);
     }
 

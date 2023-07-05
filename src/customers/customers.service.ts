@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from './customers.entity';
-import { Not, Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { createCustomerIput, getCustomersInput, updateCustomerInput } from './customers.input';
 import { getCustomersType } from './customers.types';
 import { BuildPagination } from '../core/utils/pagination.utils';
@@ -25,7 +25,10 @@ export class CustomersService {
 
     async updateCustomer(id: string, input: updateCustomerInput): Promise<Customer> {
         const customer = await this.customerRepo.findOneBy({ id });
-        const exists = await this.customerRepo.findOneBy({ nationalId: input.nationalId })
+        let exists = undefined;
+        if (input.nationalId) {
+            exists = await this.customerRepo.findOneBy({ nationalId: input.nationalId })
+        }
         if (!customer) {
             throw new BadRequestException("Customer not found")
         }

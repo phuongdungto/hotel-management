@@ -15,7 +15,7 @@ import { PurchasesOrderDetail } from '../purchase-order-details/purchase-order-d
 
 @Entity('purchases_order')
 export class PurchasesOrder extends baseEntity {
-    constructor(data: Partial<PurchasesOrder>) {
+    constructor(data?: Partial<PurchasesOrder>) {
         super();
         Object.assign(this, data);
     }

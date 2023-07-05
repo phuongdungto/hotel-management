@@ -17,7 +17,7 @@ import { Goods } from '../goods/goods.entity';
 
 @Entity('purchases_order_details')
 export class PurchasesOrderDetail {
-    constructor(data: Partial<PurchasesOrderDetail>) {
+    constructor(data?: Partial<PurchasesOrderDetail>) {
         Object.assign(this, data);
     }
 

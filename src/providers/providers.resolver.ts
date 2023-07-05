@@ -1,17 +1,17 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ProvidersService } from './providers.service';
 import { createProviderInput, getProvidersInput, updateProviderInput } from './providers.input';
-import { getProvidersType, providerType } from './providers.types';
+import { getProvidersType } from './providers.types';
 import { Providers } from './providers.entity';
 import { responseUntil } from 'src/core/utils/response.utils';
 
-@Resolver()
+@Resolver(() => Providers)
 export class ProvidersResolver {
     constructor(
         private providerService: ProvidersService
     ) { }
 
-    @Mutation(returns => providerType)
+    @Mutation(returns => Providers)
     async createProvider(@Args('createProviderInput') input: createProviderInput): Promise<Providers> {
         return await this.providerService.createProvider(input);
     }
@@ -25,12 +25,12 @@ export class ProvidersResolver {
         }
     }
 
-    @Mutation(returns => providerType)
+    @Mutation(returns => Providers)
     async updateProvider(@Args('id') id: string, @Args('updateProviderInput') input: updateProviderInput): Promise<Providers> {
         return await this.providerService.updateProvider(id, input)
     }
 
-    @Query(returns => providerType)
+    @Query(returns => Providers)
     async getProvider(@Args('id') id: string): Promise<Providers> {
         return await this.providerService.getProvider(id);
     }

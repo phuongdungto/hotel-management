@@ -4,8 +4,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { RoomsStyleModule } from './rooms-style/room-style.module';
-import { RoomsModule } from './rooms/room.module';
+import { RoomsModule } from './rooms/rooms.module';
 import { CustomersModule } from './customers/customers.module';
 import { RoomReservationModule } from './room-reservation/room-reservation.module';
 import { RoomReservationDetailModule } from './room-reservation-detail/room-reservation-detail.module';
@@ -17,6 +16,8 @@ import { AuthModule } from './auth/auth.module';
 import dataSource, { dataSourceOptions } from './core/db/data-source';
 import { ProvidersModule } from './providers/providers.module';
 import { GoodsModule } from './goods/goods.module';
+import { RoomsStyleModule } from './rooms-style/rooms-style.module';
+import { ServicesModule } from './services/services.module';
 
 
 @Module({
@@ -27,7 +28,7 @@ import { GoodsModule } from './goods/goods.module';
     }),
     TypeOrmModule.forRootAsync({
       useFactory: () => (dataSourceOptions),
-      dataSourceFactory: async (options) => {
+      dataSourceFactory: async () => {
         const dataSourceInit = await dataSource.initialize();
         return dataSourceInit;
       }
@@ -36,44 +37,7 @@ import { GoodsModule } from './goods/goods.module';
       driver: ApolloDriver,
       autoSchemaFile: true,
       installSubscriptionHandlers: true,
-
-      // formatError: (error: GraphQLError) => {
-      //   if (error.message === 'VALIDATION_ERROR') {
-      //     const extensions = {
-      //       code: 'VALIDATION_ERROR',
-      //       errors: [],
-      //     };
-
-      //     Object.keys(error.extensions.invalidArgs).forEach((key) => {
-      //       const constraints = [];
-      //       Object.keys(error.extensions.invalidArgs[key].constraints).forEach(
-      //         (_key) => {
-      //           constraints.push(
-      //             error.extensions.invalidArgs[key].constraints[_key],
-      //           );
-      //         },
-      //       );
-
-      //       extensions.errors.push({
-      //         field: error.extensions.invalidArgs[key].property,
-      //         errors: constraints,
-      //       });
-      //     });
-
-      //     const graphQLFormattedError: GraphQLFormattedError = {
-      //       message: 'VALIDATION_ERROR',
-      //       extensions: extensions,
-      //     };
-
-      //     return graphQLFormattedError;
-      //   } else {
-      //     return error;
-      //   }
-      // },
       formatError: (err: GraphQLError) => {
-        if (err.message.includes('Database Error')) {
-          err.message = 'Internal server error'
-        }
         const { code, originalError, stacktrace } = err.extensions;
         return {
           message: err.message,
@@ -87,7 +51,6 @@ import { GoodsModule } from './goods/goods.module';
     }),
     UsersModule,
     CustomersModule,
-    RoomsStyleModule,
     RoomsModule,
     RoomReservationModule,
     RoomReservationDetailModule,
@@ -96,6 +59,8 @@ import { GoodsModule } from './goods/goods.module';
     AuthModule,
     ProvidersModule,
     GoodsModule,
+    RoomsStyleModule,
+    ServicesModule
   ],
   providers: [
 

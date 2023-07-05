@@ -1,8 +1,8 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { userType } from "../users/users.types";
+import { User } from "../users/users.entity";
 
 @ObjectType()
-export class signinType extends userType {
+export class signinType extends User {
     @Field()
     accessToken: string
 }

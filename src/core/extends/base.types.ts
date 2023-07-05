@@ -1,10 +1,13 @@
 import { Field, ObjectType } from "@nestjs/graphql"
 
 @ObjectType()
-export class getUsersType<T> {
+export class baseType {
     @Field()
-    users: T[]
+    id: string
 
     @Field()
-    totalPage: number
+    createdAt: Date
+
+    @Field()
+    updatedAt: Date
 }

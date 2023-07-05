@@ -8,11 +8,11 @@ import {
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import { RoomReservation } from '../room-reservation/room-reservation.entity';
-import { Rooms } from '../rooms/room.entity';
+import { Rooms } from '../rooms/rooms.entity';
 
 @Entity('room_reservation_detail')
 export class RoomReservationDetail {
-    constructor(data: Partial<RoomReservationDetail>) {
+    constructor(data?: Partial<RoomReservationDetail>) {
         Object.assign(this, data);
     }
 
