@@ -16,7 +16,7 @@ import { BillDetail } from '../bill-details/bill-detail.entity';
 
 @Entity('bills')
 export class Bill extends baseEntity {
-    constructor(data: Partial<Bill>) {
+    constructor(data?: Partial<Bill>) {
         super();
         Object.assign(this, data);
     }

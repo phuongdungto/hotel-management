@@ -11,26 +11,33 @@ import {
     JoinColumn,
 } from 'typeorm';
 import { RoomPromotionDetails } from '../room-promotion-detail/room-promotion-detail.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
 
+@ObjectType()
 @Entity('rooms')
 export class Rooms extends baseEntity {
-    constructor(data: Partial<Rooms>) {
+    constructor(data?: Partial<Rooms>) {
         super();
         Object.assign(this, data);
     }
 
+    @Field()
     @Column()
     name: string
 
+    @Field()
     @Column()
     floor: number
 
+    @Field()
     @Column()
     numberOfPeople: number
 
+    @Field()
     @Column()
     price: number
 
+    @Field()
     @Column({
         name: 'status',
         type: 'enum',
@@ -44,6 +51,7 @@ export class Rooms extends baseEntity {
     @JoinColumn()
     roomStyle: Relation<RoomsStyle>
 
+    @Field()
     @Column()
     roomStyleId: string
 

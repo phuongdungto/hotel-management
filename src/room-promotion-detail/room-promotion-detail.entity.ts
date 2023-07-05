@@ -7,12 +7,12 @@ import {
     Column,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Rooms } from '../rooms/room.entity';
+import { Rooms } from '../rooms/rooms.entity';
 import { RoomPromotion } from '../room-promotion/room-promotion.entity';
 
 @Entity('room_promotion_details')
 export class RoomPromotionDetails {
-    constructor(data: Partial<RoomPromotionDetails>) {
+    constructor(data?: Partial<RoomPromotionDetails>) {
         Object.assign(this, data);
     }
 

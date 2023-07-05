@@ -13,17 +13,21 @@ import {
 import { RoomPromotionDetails } from '../room-promotion-detail/room-promotion-detail.entity';
 import { ServicerPomotionDetails } from '../service-promotion-details/serivice-promotion-detail.entity';
 import { BillDetail } from '../bill-details/bill-detail.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
 
-@Entity('rooms')
+@ObjectType()
+@Entity('services')
 export class Service extends baseEntity {
-    constructor(data: Partial<Service>) {
+    constructor(data?: Partial<Service>) {
         super();
         Object.assign(this, data);
     }
 
+    @Field()
     @Column()
     name: string
 
+    @Field()
     @Column()
     price: number
 

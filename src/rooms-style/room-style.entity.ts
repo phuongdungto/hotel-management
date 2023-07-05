@@ -1,5 +1,6 @@
+import { Field, ObjectType } from '@nestjs/graphql';
 import { baseEntity } from '../core/extends/base.entity';
-import { Rooms } from '../rooms/room.entity';
+import { Rooms } from '../rooms/rooms.entity';
 import {
     Entity,
     Column,
@@ -7,13 +8,15 @@ import {
     Relation,
 } from 'typeorm';
 
+@ObjectType()
 @Entity('room_style')
 export class RoomsStyle extends baseEntity {
-    constructor(data: Partial<RoomsStyle>) {
+    constructor(data?: Partial<RoomsStyle>) {
         super();
         Object.assign(this, data);
     }
 
+    @Field()
     @Column()
     name: string
 

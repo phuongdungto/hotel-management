@@ -22,7 +22,10 @@ export class ProvidersService {
 
     async updateProvider(id: string, input: updateProviderInput): Promise<Providers> {
         const provider = await this.providerRepo.findOneBy({ id })
-        const exist = await this.providerRepo.findOneBy({ name: input.name })
+        let exist = undefined;
+        if (input.name) {
+            exist = await this.providerRepo.findOneBy({ name: input.name })
+        }
         if (!provider) {
             throw new NotFoundException("Provider not found");
         }

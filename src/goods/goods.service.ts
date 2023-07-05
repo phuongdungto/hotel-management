@@ -22,7 +22,10 @@ export class GoodsService {
 
     async updateGoods(id: string, input: updateGoodsInput): Promise<Goods> {
         const goods = await this.goodsRepo.findOneBy({ id })
-        const exists = await this.goodsRepo.findOneBy({ name: input.name })
+        let exists = undefined;
+        if (input.name) {
+            exists = await this.goodsRepo.findOneBy({ name: input.name })
+        }
         if (!goods) {
             throw new NotFoundException("Goods not found");
         }

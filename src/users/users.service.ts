@@ -49,12 +49,15 @@ export class usersService {
 
     async updateUser(id: string, input: updateUserInput): Promise<User> {
         const user = await this.userRepo.findOneBy({ id });
-        const exists = await this.userRepo.findOneBy({ nationalId: input.nationalId })
-        if (exists) {
-            throw new BadRequestException("NationalId already exists")
+        let exists = undefined;
+        if (input.nationalId) {
+            exists = await this.userRepo.findOneBy({ nationalId: input.nationalId })
         }
         if (!user) {
             throw new NotFoundException('User not found.');
+        }
+        if (exists) {
+            throw new BadRequestException("NationalId already exists")
         }
         Object.assign(user, input);
         const newUser = await this.userRepo.save(user);
