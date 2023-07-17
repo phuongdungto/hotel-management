@@ -7,11 +7,14 @@ import {
     OneToMany,
     JoinColumn,
     Relation,
+    OneToOne,
 } from 'typeorm';
 import { User } from '../users/users.entity';
 import { RoomReservationDetail } from '../room-reservation-detail/room-reservation-detail.entity';
 import { Bill } from '../bills/bills.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
 
+@ObjectType()
 @Entity('room_reservation')
 export class RoomReservation extends baseEntity {
     constructor(data?: Partial<RoomReservation>) {
@@ -19,25 +22,23 @@ export class RoomReservation extends baseEntity {
         Object.assign(this, data);
     }
 
+    @Field()
     @Column()
     numberOfRoom: number;
 
+    @Field()
     @Column()
     checkIn: Date;
 
+    @Field()
     @Column()
     checkOut: Date;
-
-    @Column()
-    totalRental: number;
-
-    @Column()
-    totalPromotion: number;
 
     @ManyToOne(() => Customer, customer => customer.roomReservations)
     @JoinColumn()
     customer: Relation<Customer>;
 
+    @Field()
     @Column()
     customerId: string
 
@@ -45,13 +46,18 @@ export class RoomReservation extends baseEntity {
     @JoinColumn()
     staff: Relation<User>;
 
+    @Field()
     @Column()
     staffId: string
 
     @OneToMany(() => RoomReservationDetail, roomReservationDetail => roomReservationDetail.roomReservation)
     roomReservationDetails: Relation<RoomReservationDetail>[]
 
-    @OneToMany(() => Bill, Bill => Bill.roomReservation)
-    bills: Relation<Bill>[]
+    @OneToOne(() => Bill, Bill => Bill.roomReservation)
+    @JoinColumn()
+    bill: Relation<Bill>
+
+    @Column({ nullable: true, default: null })
+    billId: string
 
 }

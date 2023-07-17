@@ -6,6 +6,7 @@ import { responseUntil } from '../core/utils/response.utils';
 import { getRoomsType } from './rooms.types';
 import { RoomsStyle } from '../rooms-style/room-style.entity';
 import { RoomsStyleService } from 'src/rooms-style/rooms-style.service';
+import { RoomPromotionDetails } from 'src/room-promotion-detail/room-promotion-detail.entity';
 
 @Resolver(() => Rooms)
 export class RoomsResolver {
@@ -46,5 +47,10 @@ export class RoomsResolver {
     @ResolveField(() => RoomsStyle)
     async roomStyle(@Parent() room: Rooms) {
         return await this.roomStyleService.getRoomStyle(room.roomStyleId);
+    }
+
+    @ResolveField(() => [RoomPromotionDetails])
+    async roomPromotionDetails(@Parent() room: Rooms) {
+        return await this.roomService.getRoomPromotionDetails(room.id);
     }
 }

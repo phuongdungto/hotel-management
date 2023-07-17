@@ -26,8 +26,8 @@ export class ProvidersResolver {
     }
 
     @Mutation(returns => Providers)
-    async updateProvider(@Args('id') id: string, @Args('updateProviderInput') input: updateProviderInput): Promise<Providers> {
-        return await this.providerService.updateProvider(id, input)
+    async updateProvider(@Args('updateProviderInput') input: updateProviderInput): Promise<Providers> {
+        return await this.providerService.updateProvider(input)
     }
 
     @Query(returns => Providers)

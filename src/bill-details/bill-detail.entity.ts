@@ -32,9 +32,6 @@ export class BillDetail {
     @Column()
     totalPrice: number
 
-    @Column()
-    promotionPrice: number
-
     @ManyToOne(() => Bill, Bill => Bill.billDetails)
     @JoinColumn()
     bill: Relation<Bill>;
@@ -48,11 +45,4 @@ export class BillDetail {
 
     @Column()
     serviceId: string
-
-    @ManyToOne(() => ServicePromotion, ServicePromotion => ServicePromotion.billDetails)
-    @JoinColumn()
-    servicePromotion: Relation<ServicePromotion>;
-
-    @Column()
-    servicePromotionId: string
 }

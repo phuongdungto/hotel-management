@@ -37,8 +37,8 @@ export class userResolver {
 
     @Mutation(returns => User)
     @UseGuards(AuthGuard, new RolesGuard([Roles.ADMIN, Roles.MANAGER, Roles.STAFF]))
-    async updateUser(@Args('id') id: string, @Args('updateUserInput') input: updateUserInput, @Context("user") user: ReqUser): Promise<User> {
-        return await this.userService.updateUser(id, input)
+    async updateUser(@Args('updateUserInput') input: updateUserInput, @Context("user") user: ReqUser): Promise<User> {
+        return await this.userService.updateUser(input)
     }
 
     @Mutation(returns => responseUntil)

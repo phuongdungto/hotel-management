@@ -1,9 +1,10 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { CustomersService } from './customers.service';
 import { createCustomerIput, getCustomersInput, updateCustomerInput } from './customers.input';
 import { Customer } from './customers.entity';
 import { getCustomersType } from './customers.types';
 import { responseUntil } from 'src/core/utils/response.utils';
+import { RoomReservation } from 'src/room-reservation/room-reservation.entity';
 
 @Resolver(() => Customer)
 export class CustomersResolver {
@@ -18,8 +19,8 @@ export class CustomersResolver {
     }
 
     @Mutation(returns => Customer)
-    async updateCustomer(@Args('id') id: string, @Args('updareCustomerInput') input: updateCustomerInput): Promise<Customer> {
-        return await this.customerService.updateCustomer(id, input)
+    async updateCustomer(@Args('updareCustomerInput') input: updateCustomerInput): Promise<Customer> {
+        return await this.customerService.updateCustomer(input)
     }
 
     @Mutation(returns => responseUntil)
@@ -39,5 +40,10 @@ export class CustomersResolver {
     @Query(returns => getCustomersType)
     async getCustomers(@Args('getCustomersInput') input: getCustomersInput): Promise<getCustomersType> {
         return await this.customerService.getCustomers(input);
+    }
+
+    @ResolveField(()=>[RoomReservation])
+    async roomReservations(@Parent() customer:Customer):Promise<RoomReservation[]>{
+        return await this.customerService.getReservationWithCustomerId(customer.id);
     }
 }

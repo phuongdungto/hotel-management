@@ -9,13 +9,16 @@ import {
 } from 'typeorm';
 import { RoomReservation } from '../room-reservation/room-reservation.entity';
 import { Rooms } from '../rooms/rooms.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
 
+@ObjectType()
 @Entity('room_reservation_detail')
 export class RoomReservationDetail {
     constructor(data?: Partial<RoomReservationDetail>) {
         Object.assign(this, data);
     }
 
+    @Field()
     @PrimaryGeneratedColumn('uuid')
     id: string
 
@@ -23,6 +26,7 @@ export class RoomReservationDetail {
     @JoinColumn()
     roomReservation: Relation<RoomReservation>;
 
+    @Field()
     @Column()
     roomReservationId: string
 
@@ -30,6 +34,7 @@ export class RoomReservationDetail {
     @JoinColumn()
     room: Relation<Rooms>;
 
+    @Field()
     @Column()
     roomId: string
 

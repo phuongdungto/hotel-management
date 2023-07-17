@@ -4,12 +4,14 @@ import { Rooms } from './rooms.entity';
 import { Repository } from 'typeorm';
 import { createRoomInput, getRoomsInput, updateRoomInput } from './rooms.input';
 import { getRoomsType } from './rooms.types';
-import { BuildPagination } from 'src/core/utils/pagination.utils';
+import { BuildPagination } from '../core/utils/pagination.utils';
+import { RoomPromotionDetails } from '../room-promotion-detail/room-promotion-detail.entity';
 
 @Injectable()
 export class RoomsService {
     constructor(
-        @InjectRepository(Rooms) private roomRepo: Repository<Rooms>
+        @InjectRepository(Rooms) private roomRepo: Repository<Rooms>,
+        @InjectRepository(RoomPromotionDetails) private roomPromotionDetaiRepo: Repository<RoomPromotionDetails>
     ) { }
 
     async createRoom(input: createRoomInput): Promise<Rooms> {
@@ -69,4 +71,19 @@ export class RoomsService {
         return rooms;
     }
 
+    async getRoomPromotionDetails(roomId: string) {
+        let rooms = undefined;
+        if (roomId) {
+            rooms = await this.roomPromotionDetaiRepo.findBy({ roomId: roomId });
+        }
+        return rooms
+    }
+
+    async getRoomWithPromotionDetails(roomId: string): Promise<Rooms> {
+        let rooms = undefined;
+        if (roomId) {
+            rooms = await this.roomRepo.findOneBy({ id: roomId });
+        }
+        return rooms
+    }
 }

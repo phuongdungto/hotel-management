@@ -1,6 +1,5 @@
 import {
     Entity,
-    PrimaryColumn,
     ManyToOne,
     JoinColumn,
     Relation,
@@ -9,13 +8,16 @@ import {
 } from 'typeorm';
 import { Rooms } from '../rooms/rooms.entity';
 import { RoomPromotion } from '../room-promotion/room-promotion.entity';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
 
+@ObjectType()
 @Entity('room_promotion_details')
 export class RoomPromotionDetails {
     constructor(data?: Partial<RoomPromotionDetails>) {
         Object.assign(this, data);
     }
 
+    @Field()
     @PrimaryGeneratedColumn('uuid')
     id: string
 
@@ -23,6 +25,7 @@ export class RoomPromotionDetails {
     @JoinColumn()
     roomPromotion: Relation<RoomPromotion>;
 
+    @Field()
     @Column()
     roomPromotionId: string
 
@@ -30,7 +33,16 @@ export class RoomPromotionDetails {
     @JoinColumn()
     room: Relation<Rooms>;
 
+    @Field()
     @Column()
     roomId: string
+
+    @Field()
+    @Column()
+    dateStart: Date;
+
+    @Field()
+    @Column()
+    dateEnd: Date;
 
 }

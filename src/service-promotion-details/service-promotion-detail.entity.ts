@@ -7,20 +7,22 @@ import {
     Column,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Rooms } from '../rooms/rooms.entity';
-import { RoomPromotion } from '../room-promotion/room-promotion.entity';
 import { ServicePromotion } from '../service-promotion/service-promotion.entity';
 import { Service } from '../services/service.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
 
+@ObjectType()
 @Entity('service_promotion_details')
-export class ServicerPomotionDetails {
-    constructor(data?: Partial<ServicerPomotionDetails>) {
+export class ServicePromotionDetails {
+    constructor(data?: Partial<ServicePromotionDetails>) {
         Object.assign(this, data);
     }
 
+    @Field()
     @PrimaryGeneratedColumn('uuid')
     id: string
 
+    @Field()
     @Column()
     percent: number;
 
@@ -28,6 +30,7 @@ export class ServicerPomotionDetails {
     @JoinColumn()
     servicePromotion: Relation<ServicePromotion>;
 
+    @Field()
     @Column()
     servicePromotionId: string
 
@@ -35,6 +38,15 @@ export class ServicerPomotionDetails {
     @JoinColumn()
     service: Relation<Service>;
 
+    @Field()
     @Column()
     serviceId: string
+
+    @Field()
+    @Column()
+    dateStart: Date;
+
+    @Field()
+    @Column()
+    dateEnd: Date;
 }

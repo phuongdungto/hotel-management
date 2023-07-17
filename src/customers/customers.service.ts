@@ -5,11 +5,13 @@ import { IsNull, Not, Repository } from 'typeorm';
 import { createCustomerIput, getCustomersInput, updateCustomerInput } from './customers.input';
 import { getCustomersType } from './customers.types';
 import { BuildPagination } from '../core/utils/pagination.utils';
+import { RoomReservation } from 'src/room-reservation/room-reservation.entity';
 
 @Injectable()
 export class CustomersService {
     constructor(
-        @InjectRepository(Customer) private customerRepo: Repository<Customer>
+        @InjectRepository(Customer) private customerRepo: Repository<Customer>,
+        @InjectRepository(RoomReservation) private reservationRepo: Repository<RoomReservation>
     ) {
 
     }
@@ -23,8 +25,8 @@ export class CustomersService {
         return await this.customerRepo.save(input);
     }
 
-    async updateCustomer(id: string, input: updateCustomerInput): Promise<Customer> {
-        const customer = await this.customerRepo.findOneBy({ id });
+    async updateCustomer(input: updateCustomerInput): Promise<Customer> {
+        const customer = await this.customerRepo.findOneBy({ id: input.id });
         let exists = undefined;
         if (input.nationalId) {
             exists = await this.customerRepo.findOneBy({ nationalId: input.nationalId })
@@ -62,5 +64,21 @@ export class CustomersService {
             throw new NotFoundException("Customer not found")
         }
         await this.customerRepo.softDelete(id);
+    }
+
+    async getReservationWithCustomerId(customerId:string){
+        let details = undefined;
+        if (customerId) {
+            details = await this.reservationRepo.findBy({ customerId: customerId})
+        }
+        return details;
+    }
+
+    async getCustomerWithReservationId(customerId:string){
+        let details = undefined;
+        if (customerId) {
+            details = await this.customerRepo.findOneBy({ id: customerId})
+        }
+        return details;
     }
 }

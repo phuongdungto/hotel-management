@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { UsersModule } from './users/users.module';
@@ -10,14 +10,16 @@ import { RoomReservationModule } from './room-reservation/room-reservation.modul
 import { RoomReservationDetailModule } from './room-reservation-detail/room-reservation-detail.module';
 import { RoomPromotionModule } from './room-promotion/room-promotion.module';
 import { RoomPromotionDetailModule } from './room-promotion-detail/room-promotion-detail.module';
-import { GraphQLError, GraphQLFormattedError } from 'graphql';
+import { GraphQLError } from 'graphql';
 import { AuthModule } from './auth/auth.module';
-// import { DatabaseModule } from './database/database.module';
 import dataSource, { dataSourceOptions } from './core/db/data-source';
 import { ProvidersModule } from './providers/providers.module';
 import { GoodsModule } from './goods/goods.module';
 import { RoomsStyleModule } from './rooms-style/rooms-style.module';
 import { ServicesModule } from './services/services.module';
+import { ServicePromotionModule } from './service-promotion/service-promotion.module';
+import { ServicePromotionDetailsModule } from './service-promotion-details/service-promotion-details.module';
+import { BillsModule } from './bills/bills.module';
 
 
 @Module({
@@ -60,7 +62,10 @@ import { ServicesModule } from './services/services.module';
     ProvidersModule,
     GoodsModule,
     RoomsStyleModule,
-    ServicesModule
+    ServicesModule,
+    ServicePromotionModule,
+    ServicePromotionDetailsModule,
+    BillsModule
   ],
   providers: [
 

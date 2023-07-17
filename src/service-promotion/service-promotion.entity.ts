@@ -5,10 +5,10 @@ import {
     Relation,
 } from 'typeorm';
 import { baseEntity } from '../core/extends/base.entity';
-import { RoomPromotionDetails } from '../room-promotion-detail/room-promotion-detail.entity';
-import { ServicerPomotionDetails } from '../service-promotion-details/serivice-promotion-detail.entity';
-import { BillDetail } from '../bill-details/bill-detail.entity';
+import { ServicePromotionDetails } from '../service-promotion-details/service-promotion-detail.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
 
+@ObjectType()
 @Entity('service_promotions')
 export class ServicePromotion extends baseEntity {
     constructor(data?: Partial<ServicePromotion>) {
@@ -16,18 +16,18 @@ export class ServicePromotion extends baseEntity {
         Object.assign(this, data);
     }
 
+    @Field()
     @Column()
     dateStart: Date;
 
+    @Field()
     @Column()
     dateEnd: Date;
 
+    @Field()
     @Column()
     name: string;
 
-    @OneToMany(() => ServicerPomotionDetails, ServicerPomotionDetails => ServicerPomotionDetails.servicePromotion)
-    servicePromotionDetails: Relation<ServicerPomotionDetails>[]
-
-    @OneToMany(() => BillDetail, BillDetail => BillDetail.servicePromotion)
-    billDetails: Relation<BillDetail>[]
+    @OneToMany(() => ServicePromotionDetails, ServicePromotionDetails => ServicePromotionDetails.servicePromotion)
+    servicePromotionDetails: Relation<ServicePromotionDetails>[]
 }

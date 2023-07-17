@@ -1,5 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsArray, IsDate, IsEnum, IsNumber, IsNumberString, IsOptional, IsString, Length, MaxLength, MinLength } from 'class-validator';
+import { IsArray, IsDate, IsEnum, IsNumber, IsNumberString, IsOptional, IsString, IsUUID, Length, MaxLength, MinLength } from 'class-validator';
 import { Gender, Roles } from '../core/enum';
 import { FilterPagination } from '../core/interfaces/fiter.interface';
 
@@ -57,6 +57,11 @@ export class createUserInput {
 
 @InputType()
 export class updateUserInput {
+    @IsUUID()
+    @IsString()
+    @Field()
+    id: string
+
     @Field({ nullable: true })
     @IsNumberString()
     @Length(12)

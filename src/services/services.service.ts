@@ -3,13 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Service } from './service.entity';
 import { Repository } from 'typeorm';
 import { createServiceInput, getServicesInput, updateServiceInput } from './services.input';
-import { BuildPagination } from 'src/core/utils/pagination.utils';
+import { BuildPagination } from '../core/utils/pagination.utils';
 import { getServicesType } from './services.types';
+import { ServicePromotionDetails } from '../service-promotion-details/service-promotion-detail.entity';
 
 @Injectable()
 export class ServicesService {
     constructor(
-        @InjectRepository(Service) private serviceRepo: Repository<Service>
+        @InjectRepository(Service) private serviceRepo: Repository<Service>,
+        @InjectRepository(ServicePromotionDetails) private servicePromotionDetailsRepo: Repository<ServicePromotionDetails>
     ) { }
 
     async getService(id: string): Promise<Service> {
@@ -54,5 +56,15 @@ export class ServicesService {
             throw new NotFoundException("Service not found");
         }
         await this.serviceRepo.softDelete(id);
+    }
+
+    async getPromotionDetailsWithId(serviceId: string) {
+        let serivicePromotions = undefined;
+        if (serviceId) {
+            serivicePromotions = await this.servicePromotionDetailsRepo.find({
+                where: { serviceId: serviceId }
+            })
+        }
+        return serivicePromotions;
     }
 }

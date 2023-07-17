@@ -20,8 +20,8 @@ export class ProvidersService {
         return await this.providerRepo.save(input);
     }
 
-    async updateProvider(id: string, input: updateProviderInput): Promise<Providers> {
-        const provider = await this.providerRepo.findOneBy({ id })
+    async updateProvider(input: updateProviderInput): Promise<Providers> {
+        const provider = await this.providerRepo.findOneBy({ id: input.id })
         let exist = undefined;
         if (input.name) {
             exist = await this.providerRepo.findOneBy({ name: input.name })
