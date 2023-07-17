@@ -20,8 +20,8 @@ export class GoodsService {
         return await this.goodsRepo.save(input);
     }
 
-    async updateGoods(id: string, input: updateGoodsInput): Promise<Goods> {
-        const goods = await this.goodsRepo.findOneBy({ id })
+    async updateGoods(input: updateGoodsInput): Promise<Goods> {
+        const goods = await this.goodsRepo.findOneBy({ id: input.id })
         let exists = undefined;
         if (input.name) {
             exists = await this.goodsRepo.findOneBy({ name: input.name })

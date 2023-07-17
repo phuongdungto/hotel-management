@@ -47,8 +47,8 @@ export class usersService {
         return user;
     }
 
-    async updateUser(id: string, input: updateUserInput): Promise<User> {
-        const user = await this.userRepo.findOneBy({ id });
+    async updateUser(input: updateUserInput): Promise<User> {
+        const user = await this.userRepo.findOneBy({ id: input.id });
         let exists = undefined;
         if (input.nationalId) {
             exists = await this.userRepo.findOneBy({ nationalId: input.nationalId })

@@ -1,5 +1,5 @@
 import { Field, InputType } from "@nestjs/graphql";
-import { IsEnum, IsNumberString, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsEnum, IsNumberString, IsOptional, IsString, IsUUID, MaxLength, MinLength } from "class-validator";
 import { FilterPagination } from "../core/interfaces/fiter.interface";
 
 
@@ -23,6 +23,11 @@ export class createProviderInput {
 
 @InputType()
 export class updateProviderInput {
+    @Field()
+    @IsString()
+    @IsUUID()
+    id: string
+
     @IsString()
     @IsOptional()
     @Field({ nullable: true })

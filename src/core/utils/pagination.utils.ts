@@ -1,8 +1,9 @@
 import { In, Like } from "typeorm";
 import dataSource from "../db/data-source";
+import { FilterPagination } from "../interfaces/fiter.interface";
 
 
-export function BuildPagination(entity: any, { page, limit, sort, sortBy, ...filters }) {
+export function BuildPagination(entity: any, { page, limit, sort, sortBy, ...filters }: FilterPagination) {
     const skip = limit * (page - 1);
     const take = limit;
     let where: Record<string, any> = {};

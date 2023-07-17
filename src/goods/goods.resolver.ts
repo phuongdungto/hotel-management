@@ -17,8 +17,8 @@ export class GoodsResolver {
     }
 
     @Mutation(returns => Goods)
-    async updateGoods(@Args('id') id: string, @Args('updateGoodsInput') input: updateGoodsInput): Promise<Goods> {
-        return await this.goodsService.updateGoods(id, input)
+    async updateGoods(@Args('updateGoodsInput') input: updateGoodsInput): Promise<Goods> {
+        return await this.goodsService.updateGoods(input)
     }
 
     @Mutation(returns => responseUntil)
