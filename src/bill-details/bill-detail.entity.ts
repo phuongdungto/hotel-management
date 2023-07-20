@@ -7,35 +7,32 @@ import {
     Relation,
     ManyToOne,
     JoinColumn,
-    PrimaryColumn,
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Bill } from '../bills/bills.entity';
 import { Service } from '../services/service.entity';
-import { ServicePromotion } from '../service-promotion/service-promotion.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
 
+@ObjectType()
 @Entity('bill_details')
 export class BillDetail {
     constructor(data?: Partial<BillDetail>) {
         Object.assign(this, data);
     }
 
+    @Field()
     @PrimaryGeneratedColumn('uuid')
     id: string
 
+    @Field()
     @Column()
-    price: number
-
-    @Column()
-    numberOfServices: number
-
-    @Column()
-    totalPrice: number
+    quantity: number
 
     @ManyToOne(() => Bill, Bill => Bill.billDetails)
     @JoinColumn()
     bill: Relation<Bill>;
 
+    @Field()
     @Column()
     billId: string
 
@@ -43,6 +40,7 @@ export class BillDetail {
     @JoinColumn()
     service: Relation<Service>;
 
+    @Field()
     @Column()
     serviceId: string
 }

@@ -20,9 +20,6 @@ export class PurchasesOrder extends baseEntity {
         Object.assign(this, data);
     }
 
-    @Column()
-    total: number
-
     @ManyToOne(() => User, user => user.purchaseOrders)
     @JoinColumn()
     staff: Relation<User>;

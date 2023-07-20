@@ -13,6 +13,7 @@ import { User } from '../users/users.entity';
 import { RoomReservationDetail } from '../room-reservation-detail/room-reservation-detail.entity';
 import { Bill } from '../bills/bills.entity';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { BillStatus } from '../core/enum';
 
 @ObjectType()
 @Entity('room_reservation')
@@ -34,6 +35,16 @@ export class RoomReservation extends baseEntity {
     @Column()
     checkOut: Date;
 
+    @Field()
+    @Column({
+        name: 'status',
+        type: 'enum',
+        enum: BillStatus,
+        default: BillStatus.UNPAID,
+        nullable: false
+    })
+    status: string
+
     @ManyToOne(() => Customer, customer => customer.roomReservations)
     @JoinColumn()
     customer: Relation<Customer>;
@@ -53,7 +64,7 @@ export class RoomReservation extends baseEntity {
     @OneToMany(() => RoomReservationDetail, roomReservationDetail => roomReservationDetail.roomReservation)
     roomReservationDetails: Relation<RoomReservationDetail>[]
 
-    @OneToOne(() => Bill, Bill => Bill.roomReservation)
+    @OneToOne(() => Bill, Bill => Bill.roomReservation, { onDelete: "CASCADE" })
     @JoinColumn()
     bill: Relation<Bill>
 

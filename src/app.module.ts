@@ -20,6 +20,7 @@ import { ServicesModule } from './services/services.module';
 import { ServicePromotionModule } from './service-promotion/service-promotion.module';
 import { ServicePromotionDetailsModule } from './service-promotion-details/service-promotion-details.module';
 import { BillsModule } from './bills/bills.module';
+import { BillDetailsModule } from './bill-details/bill-details.module';
 
 
 @Module({
@@ -65,7 +66,8 @@ import { BillsModule } from './bills/bills.module';
     ServicesModule,
     ServicePromotionModule,
     ServicePromotionDetailsModule,
-    BillsModule
+    BillsModule,
+    BillDetailsModule
   ],
   providers: [
 

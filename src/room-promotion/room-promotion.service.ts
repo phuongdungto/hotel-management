@@ -69,7 +69,6 @@ export class RoomPromotionService {
 
     async getRoomPromotion(id: string): Promise<RoomPromotion> {
         const roomPromotion = await this.roomPromotionRepo.findOneBy({ id });
-        console.log(roomPromotion)
         if (!roomPromotion)
             throw new NotFoundException("Room-Promotion not found");
         return roomPromotion;
@@ -85,7 +84,6 @@ export class RoomPromotionService {
 
     async deleteRoomPromotion(id: string) {
         const roomPromotion = await this.roomPromotionRepo.findOneBy({ id })
-        console.log(roomPromotion)
         if (!roomPromotion)
             throw new NotFoundException("Room-Promotion not found");
         await this.entityManager.transaction(async (transactionManager) => {

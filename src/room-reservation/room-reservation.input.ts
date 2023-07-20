@@ -29,23 +29,58 @@ export class createRoomReservationInput {
 }
 
 @InputType()
-export class getRoomReservationsInput implements FilterPagination{
-    @Field({nullable:true})
+export class updateRoomReservationInput {
+    @IsUUID()
+    @IsString()
+    @IsOptional()
+    @Field({ nullable: true })
+    id: string
+
+    @Field({ nullable: true })
     @IsNumber()
     @IsOptional()
     numberOfRoom: number;
 
-    @Field({nullable:true})
+    @Field({ nullable: true })
     @IsDate()
     @IsOptional()
     checkIn: Date;
 
-    @Field({nullable:true})
+    @Field({ nullable: true })
     @IsDate()
     @IsOptional()
     checkOut: Date;
 
-    @Field({nullable:true})
+    @Field({ nullable: true })
+    @IsString()
+    @IsUUID()
+    @IsOptional()
+    customerId: string
+
+    @Field(() => [roomReservationDetailsType], { nullable: true })
+    @IsArray()
+    @IsOptional()
+    roomReservationDetails: roomReservationDetailsType[];
+}
+
+@InputType()
+export class getRoomReservationsInput implements FilterPagination {
+    @Field({ nullable: true })
+    @IsNumber()
+    @IsOptional()
+    numberOfRoom: number;
+
+    @Field({ nullable: true })
+    @IsDate()
+    @IsOptional()
+    checkIn: Date;
+
+    @Field({ nullable: true })
+    @IsDate()
+    @IsOptional()
+    checkOut: Date;
+
+    @Field({ nullable: true })
     @IsString()
     @IsUUID()
     @IsOptional()

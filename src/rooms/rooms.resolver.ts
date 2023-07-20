@@ -3,20 +3,20 @@ import { RoomsService } from './rooms.service';
 import { Rooms } from './rooms.entity';
 import { createRoomInput, getRoomsInput, updateRoomInput } from './rooms.input';
 import { responseUntil } from '../core/utils/response.utils';
-import { getRoomsType } from './rooms.types';
+import { getRoomsType, roomType } from './rooms.types';
 import { RoomsStyle } from '../rooms-style/room-style.entity';
 import { RoomsStyleService } from 'src/rooms-style/rooms-style.service';
 import { RoomPromotionDetails } from 'src/room-promotion-detail/room-promotion-detail.entity';
 
-@Resolver(() => Rooms)
+@Resolver(() => roomType)
 export class RoomsResolver {
     constructor(
         private roomService: RoomsService,
         private roomStyleService: RoomsStyleService
     ) { }
 
-    @Query(returns => Rooms)
-    async getRoom(@Args('id') id: string): Promise<Rooms> {
+    @Query(returns => roomType)
+    async getRoom(@Args('id') id: string): Promise<roomType> {
         return await this.roomService.getRoom(id);
     }
 
