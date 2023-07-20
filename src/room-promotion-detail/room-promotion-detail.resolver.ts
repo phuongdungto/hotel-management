@@ -13,11 +13,11 @@ export class RoomPromotionDetailResolver {
 
     ) { }
 
-    @ResolveField(() => RoomPromotion)
+    @ResolveField(() => RoomPromotion, { nullable: true })
     async roomPromotion(@Parent() roomPromotionDetail: RoomPromotionDetails) {
         return await this.roomPromotionService.getRoomPromotionWithRoomPromotionDeltails(roomPromotionDetail.roomPromotionId)
     }
-    @ResolveField(() => Rooms)
+    @ResolveField(() => Rooms, { nullable: true })
     async room(@Parent() roomPromotionDetail: RoomPromotionDetails) {
         return await this.roomService.getRoomWithPromotionDetails(roomPromotionDetail.roomId);
     }

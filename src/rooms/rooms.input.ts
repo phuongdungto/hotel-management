@@ -1,5 +1,5 @@
 import { Field, InputType } from "@nestjs/graphql";
-import { IsEnum, IsNumber, IsNumberString, IsOptional, IsString, IsUUID } from "class-validator";
+import { IsArray, IsEnum, IsNumber, IsNumberString, IsOptional, IsString, IsUUID } from "class-validator";
 import { RoomStatus } from "../core/enum";
 import { FilterPagination } from "src/core/interfaces/fiter.interface";
 
@@ -100,6 +100,7 @@ export class getRoomsInput implements FilterPagination {
 
     @Field(() => [String], { nullable: true })
     @IsEnum(RoomStatus, { each: true })
+    @IsArray()
     @IsOptional()
     status: string[]
 
@@ -110,11 +111,9 @@ export class getRoomsInput implements FilterPagination {
     roomStyleId: string
 
     @IsOptional()
-    @IsOptional()
     @Field({ nullable: true })
     page: number
 
-    @IsOptional()
     @IsOptional()
     @Field({ nullable: true })
     limit: number

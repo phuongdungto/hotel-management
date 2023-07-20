@@ -7,6 +7,7 @@ import {
     Relation,
 } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Bill } from '../bills/bills.entity';
 
 @ObjectType()
 @Entity('customers')
@@ -45,4 +46,7 @@ export class Customer extends baseEntity {
 
     @OneToMany(() => RoomReservation, roomReservation => roomReservation.customer)
     roomReservations: Relation<RoomReservation>[]
+
+    @OneToMany(() => Bill, bill => bill.customer)
+    bills: Relation<Bill>[]
 }

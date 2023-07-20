@@ -12,7 +12,10 @@ import {
 } from 'typeorm';
 import { User } from '../users/users.entity';
 import { BillDetail } from '../bill-details/bill-detail.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { Customer } from '../customers/customers.entity';
 
+@ObjectType()
 @Entity('bills')
 export class Bill extends baseEntity {
     constructor(data?: Partial<Bill>) {
@@ -24,16 +27,27 @@ export class Bill extends baseEntity {
     @JoinColumn()
     staff: Relation<User>;
 
+    @Field()
     @Column()
     staffId: string
 
-    @OneToOne(() => RoomReservation, RoomReservation => RoomReservation.bill)
+    @ManyToOne(() => Customer, customer => customer.bills)
+    @JoinColumn()
+    customer: Relation<Customer>;
+
+    @Field()
+    @Column()
+    customerId: string
+
+    @OneToOne(() => RoomReservation, RoomReservation => RoomReservation.bill, { onDelete: "CASCADE" })
     @JoinColumn()
     roomReservation: Relation<RoomReservation>;
 
+    @Field()
     @Column()
     roomReservationId: string
 
+    @Field()
     @Column({
         name: 'status',
         type: 'enum',

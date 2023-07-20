@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Rooms } from './rooms.entity';
 import { Repository } from 'typeorm';
 import { createRoomInput, getRoomsInput, updateRoomInput } from './rooms.input';
-import { getRoomsType } from './rooms.types';
+import { getRoomsType, roomType } from './rooms.types';
 import { BuildPagination } from '../core/utils/pagination.utils';
 import { RoomPromotionDetails } from '../room-promotion-detail/room-promotion-detail.entity';
 
@@ -46,20 +46,61 @@ export class RoomsService {
         await this.roomRepo.softDelete(id);
     }
 
-    async getRoom(id: string): Promise<Rooms> {
-        const room = await this.roomRepo.findOneBy({ id });
+    async getRoom(id: string): Promise<roomType> {
+        let room = await this.roomRepo.findOne({
+            where: { id: id },
+            relations: {
+                roomPromotionDetails: {
+                    roomPromotion: true
+                }
+            }
+        });
         if (!room) {
             throw new NotFoundException("Room not found");
         }
-        return room;
+        const currentDate = new Date();
+        let percent = 0;
+        let roomPromotion = null;
+        room.roomPromotionDetails.forEach((item) => {
+            if (item.dateStart <= currentDate && item.dateEnd >= currentDate) {
+                percent = item.roomPromotion.percent;
+                roomPromotion = item.roomPromotion;
+            }
+        })
+        delete room.roomPromotionDetails
+        return {
+            ...room,
+            percent,
+            roomPromotion
+        };
     }
 
     async getRooms(input: getRoomsInput): Promise<getRoomsType> {
         const query = BuildPagination(Rooms, input);
-        const [rows, count] = await this.roomRepo.findAndCount({
-            ...query
+        let [rows, count] = await this.roomRepo.findAndCount({
+            ...query,
+            relations: {
+                roomPromotionDetails: {
+                    roomPromotion: true
+                }
+            }
         })
-        return { totalPage: Math.ceil(count / input.limit), rooms: rows }
+        const currentDate = new Date();
+        rows.forEach((item1: roomType, index1, arr1) => {
+            let percent = 0;
+            let roomPromotion = null;
+            item1.roomPromotionDetails.forEach((item, index, arr) => {
+                if (item.dateStart <= currentDate && item.dateEnd >= currentDate) {
+                    percent = item.roomPromotion.percent;
+                    roomPromotion = item.roomPromotion;
+                }
+            })
+            item1.percent = percent;
+            item1.roomPromotion = roomPromotion;
+            delete item1.roomPromotionDetails
+
+        })
+        return { totalPage: Math.ceil(count / input.limit), rooms: rows as [roomType] }
     }
 
     async getRoomsWithRoomStlye(roomStyleId: string) {
@@ -85,5 +126,32 @@ export class RoomsService {
             rooms = await this.roomRepo.findOneBy({ id: roomId });
         }
         return rooms
+    }
+
+    async getRoomWithReservation(roomId: string): Promise<roomType> {
+        let room = await this.roomRepo.findOne({
+            where: { id: roomId },
+            relations: {
+                roomPromotionDetails: {
+                    roomPromotion: true
+                }
+            }
+        });
+        const currentDate = new Date();
+        let percent = 0;
+        let roomPromotion = null;
+        room.roomPromotionDetails.forEach((item) => {
+            if (item.dateStart <= currentDate && item.dateEnd >= currentDate) {
+
+                percent = item.roomPromotion.percent;
+                roomPromotion = item.roomPromotion;
+            }
+        })
+        delete room.roomPromotionDetails
+        return {
+            ...room,
+            percent,
+            roomPromotion
+        };
     }
 }

@@ -129,11 +129,9 @@ export class getCustomersInput implements FilterPagination {
     gender: string;
 
     @IsOptional()
-    @IsOptional()
     @Field({ nullable: true })
     page: number
 
-    @IsOptional()
     @IsOptional()
     @Field({ nullable: true })
     limit: number

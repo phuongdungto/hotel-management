@@ -21,9 +21,7 @@ export class RoomsStyleService {
     }
 
     async updateRoomStyle(input: updateRoomStyleInput): Promise<RoomsStyle> {
-        console.log(input.id);
         const roomStyle = await this.roomStypeRepo.findOneBy({ id: input.id });
-        console.log(roomStyle);
         let exists = undefined;
         if (input.name) {
             exists = await this.roomStypeRepo.findOneBy({ name: input.name });

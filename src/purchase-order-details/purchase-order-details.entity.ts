@@ -25,7 +25,7 @@ export class PurchasesOrderDetail {
     id: string
 
     @Column()
-    total: number
+    quantity: number
 
     @ManyToOne(() => PurchasesOrder, purchasesOrder => purchasesOrder.purchasesOrderDetails)
     @JoinColumn()

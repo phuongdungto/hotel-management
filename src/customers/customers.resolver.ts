@@ -42,8 +42,8 @@ export class CustomersResolver {
         return await this.customerService.getCustomers(input);
     }
 
-    @ResolveField(()=>[RoomReservation])
-    async roomReservations(@Parent() customer:Customer):Promise<RoomReservation[]>{
+    @ResolveField(() => [RoomReservation])
+    async roomReservations(@Parent() customer: Customer): Promise<RoomReservation[]> {
         return await this.customerService.getReservationWithCustomerId(customer.id);
     }
 }
