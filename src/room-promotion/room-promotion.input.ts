@@ -23,9 +23,8 @@ export class createRoomPromotionInput {
     @IsNumber()
     percent: number;
 
-    @Field(() => [roomPromotionDetailType], { nullable: true })
+    @Field(() => [roomPromotionDetailType])
     @IsArray()
-    @IsOptional()
     roomPromotionDetails: roomPromotionDetailType[]
 }
 

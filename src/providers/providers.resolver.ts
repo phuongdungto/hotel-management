@@ -1,14 +1,17 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ProvidersService } from './providers.service';
 import { createProviderInput, getProvidersInput, updateProviderInput } from './providers.input';
 import { getProvidersType } from './providers.types';
 import { Providers } from './providers.entity';
-import { responseUntil } from 'src/core/utils/response.utils';
+import { responseUntil } from '../core/utils/response.utils';
+import { PurchasesOrder } from '../purchase-order/purchase-order.entity';
+import { PurchaseOrderService } from '../purchase-order/purchase-order.service';
 
 @Resolver(() => Providers)
 export class ProvidersResolver {
     constructor(
-        private providerService: ProvidersService
+        private providerService: ProvidersService,
+        private purchaseOrderService: PurchaseOrderService
     ) { }
 
     @Mutation(returns => Providers)
@@ -38,5 +41,10 @@ export class ProvidersResolver {
     @Query(returns => getProvidersType)
     async getProviders(@Args('getProviderInput') input: getProvidersInput): Promise<getProvidersType> {
         return await this.providerService.getProviders(input);
+    }
+
+    @ResolveField(() => [PurchasesOrder], { nullable: true })
+    async purchaseOrders(@Parent() providers: Providers): Promise<PurchasesOrder[]> {
+        return await this.purchaseOrderService.getPurchaseOrderWithProviders(providers.id)
     }
 }

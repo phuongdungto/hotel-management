@@ -28,8 +28,8 @@ export class ServicePromotionService {
                     return {
                         ...item,
                         servicePromotionId: servicePromotion.id,
-                        dateStart:servicePromotion.dateStart,
-                        dateEnd:servicePromotion.dateEnd,
+                        dateStart: servicePromotion.dateStart,
+                        dateEnd: servicePromotion.dateEnd,
                     }
                 })
                 const newDetails = transactionManager.getRepository(ServicePromotionDetails).create(servicePromotionDetails);
@@ -58,7 +58,9 @@ export class ServicePromotionService {
                 const servicePromotionDetails: Partial<ServicePromotionDetails>[] = input.servicePromotionDetails.map(item => {
                     return {
                         ...item,
-                        servicePromotionId: servicePromotion.id
+                        servicePromotionId: servicePromotion.id,
+                        dateStart: servicePromotion.dateStart,
+                        dateEnd: servicePromotion.dateEnd
                     }
                 })
                 const newDetails = transactionManager.getRepository(ServicePromotionDetails).create(servicePromotionDetails);
@@ -99,7 +101,7 @@ export class ServicePromotionService {
         const current = new Date()
         if (ServicePromotionId) {
             promotion = await this.ServicePromotionDetailRepo.find({
-                where:{ servicePromotionId: ServicePromotionId, dateStart: LessThanOrEqual(current), dateEnd: MoreThanOrEqual(current) }
+                where: { servicePromotionId: ServicePromotionId, dateStart: LessThanOrEqual(current), dateEnd: MoreThanOrEqual(current) }
             });
         }
         return promotion

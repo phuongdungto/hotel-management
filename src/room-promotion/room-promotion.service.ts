@@ -57,7 +57,9 @@ export class RoomPromotionService {
                 const roomPromotionDetails = input.roomPromotionDetails.map(item => {
                     return {
                         ...item,
-                        roomPromotionId: RoomPromotion.id
+                        roomPromotionId: RoomPromotion.id,
+                        dateStart: roomPromotion.dateStart,
+                        dateEnd: roomPromotion.dateEnd
                     }
                 })
                 const newDetails = transactionManager.getRepository(RoomPromotionDetails).create(roomPromotionDetails);

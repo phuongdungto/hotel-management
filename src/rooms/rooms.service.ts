@@ -64,14 +64,14 @@ export class RoomsService {
         room.roomPromotionDetails.forEach((item) => {
             if (item.dateStart <= currentDate && item.dateEnd >= currentDate) {
                 percent = item.roomPromotion.percent;
-                roomPromotion = item.roomPromotion;
+                roomPromotion = item.roomPromotion.name;
             }
         })
         delete room.roomPromotionDetails
         return {
             ...room,
-            percent,
-            roomPromotion
+            percent: percent,
+            roomPromotion: roomPromotion
         };
     }
 
@@ -92,14 +92,14 @@ export class RoomsService {
             item1.roomPromotionDetails.forEach((item, index, arr) => {
                 if (item.dateStart <= currentDate && item.dateEnd >= currentDate) {
                     percent = item.roomPromotion.percent;
-                    roomPromotion = item.roomPromotion;
+                    roomPromotion = item.roomPromotion.name;
                 }
             })
             item1.percent = percent;
             item1.roomPromotion = roomPromotion;
             delete item1.roomPromotionDetails
-
         })
+        console.log(rows)
         return { totalPage: Math.ceil(count / input.limit), rooms: rows as [roomType] }
     }
 
@@ -144,7 +144,7 @@ export class RoomsService {
             if (item.dateStart <= currentDate && item.dateEnd >= currentDate) {
 
                 percent = item.roomPromotion.percent;
-                roomPromotion = item.roomPromotion;
+                roomPromotion = item.roomPromotion.name;
             }
         })
         delete room.roomPromotionDetails

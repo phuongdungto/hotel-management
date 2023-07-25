@@ -21,6 +21,9 @@ import { ServicePromotionModule } from './service-promotion/service-promotion.mo
 import { ServicePromotionDetailsModule } from './service-promotion-details/service-promotion-details.module';
 import { BillsModule } from './bills/bills.module';
 import { BillDetailsModule } from './bill-details/bill-details.module';
+import { PurchaseOrderModule } from './purchase-order/purchase-order.module';
+import { PurchaseOrderDetailsModule } from './purchase-order-details/purchase-order-details.module';
+import { StatisticsModule } from './statistics/statistics.module';
 
 
 @Module({
@@ -67,10 +70,10 @@ import { BillDetailsModule } from './bill-details/bill-details.module';
     ServicePromotionModule,
     ServicePromotionDetailsModule,
     BillsModule,
-    BillDetailsModule
-  ],
-  providers: [
-
+    BillDetailsModule,
+    PurchaseOrderDetailsModule,
+    PurchaseOrderModule,
+    StatisticsModule
   ],
 })
 export class AppModule { }
