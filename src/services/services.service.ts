@@ -4,7 +4,7 @@ import { Service } from './service.entity';
 import { Repository } from 'typeorm';
 import { createServiceInput, getServicesInput, updateServiceInput } from './services.input';
 import { BuildPagination } from '../core/utils/pagination.utils';
-import { getServicesType } from './services.types';
+import { getServicesType, serviceType } from './services.types';
 import { ServicePromotionDetails } from '../service-promotion-details/service-promotion-detail.entity';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class ServicesService {
         const [rows, count] = await this.serviceRepo.findAndCount({
             ...query
         })
-        return { totalPage: Math.ceil(count / input.limit), services: rows }
+        return { totalPage: Math.ceil(count / input.limit), services: rows as [serviceType] }
     }
 
     async createService(input: createServiceInput): Promise<Service> {

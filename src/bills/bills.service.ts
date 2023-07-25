@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { Bill } from './bills.entity';
-import { EntityManager, LessThanOrEqual, Repository } from 'typeorm';
+import { EntityManager, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { BillDetail } from '../bill-details/bill-detail.entity';
 import { billType, getBillsType } from './bills.types';
 import { getIds, minusDate } from '../core/utils/check.utils';
@@ -45,7 +45,13 @@ export class BillsService {
                 }
             }
         });
-        this.formatBill(bill as billType);
+        if (!bill) {
+            throw new BadRequestException("Bill not found")
+        }
+        await this.formatBill(bill as billType);
+        bill.roomReservation.roomReservationDetails.map((item) => {
+            console.log(item.room)
+        });
         return bill as billType
     }
 
@@ -191,7 +197,7 @@ export class BillsService {
         return bill;
     }
 
-    formatBill(bill: billType) {
+    async formatBill(bill: billType) {
         let cost = 1;
         if (minusDate(bill.roomReservation.checkOut, bill.roomReservation.checkIn) > 1) {
             cost = minusDate(bill.roomReservation.checkOut, bill.roomReservation.checkIn)
@@ -209,7 +215,7 @@ export class BillsService {
                     if (item1.dateStart <= bill.createdAt && item1.dateEnd >= bill.createdAt) {
                         totalRoomPromotion += (item1.roomPromotion.percent * item.room.price * cost) / 100;
                         percent = item1.roomPromotion.percent;
-                        roomPromotion = item1.roomPromotion
+                        roomPromotion = item1.roomPromotion.name;
                     }
                 })
                 if (index === arr.length - 1) {
@@ -228,7 +234,7 @@ export class BillsService {
                     if (item1.dateStart <= bill.createdAt && item1.dateEnd >= bill.createdAt) {
                         totalServicePromotion += (item1.percent * item.service.price) / 100;
                         percent = item1.percent;
-                        servicePromotion = item1.servicePromotion
+                        servicePromotion = item1.servicePromotion.name
                     }
                 })
                 if (index === arr.length - 1) {

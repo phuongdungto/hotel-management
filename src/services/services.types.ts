@@ -8,14 +8,14 @@ export class serviceType extends Service {
     @Field({ nullable: true })
     percent: number
 
-    @Field(() => ServicePromotion, { nullable: true })
-    servicePromotion: ServicePromotion
+    @Field({ nullable: true })
+    servicePromotion: string
 }
 
 @ObjectType()
 export class getServicesType {
-    @Field(() => [Service])
-    services: Service[]
+    @Field(() => [serviceType])
+    services: serviceType[]
 
     @Field()
     totalPage: number

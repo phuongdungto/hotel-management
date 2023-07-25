@@ -72,8 +72,8 @@ export class RoomReservationResolver {
     return await this.customerService.getCustomerWithReservationId(roomReservation.customerId);
   }
 
-  @ResolveField(returns => billType, { nullable: true })
-  async bill(@Parent() reservation: RoomReservation): Promise<billType> {
-    return await this.billService.getbillWithReservation(reservation.billId);
-  }
+  // @ResolveField(returns => billType, { nullable: true })
+  // async bill(@Parent() reservation: RoomReservation): Promise<billType> {
+  //   return await this.billService.getbillWithReservation(reservation.billId);
+  // }
 }

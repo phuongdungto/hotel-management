@@ -12,7 +12,9 @@ import {
 import { User } from '../users/users.entity';
 import { Providers } from '../providers/providers.entity';
 import { PurchasesOrderDetail } from '../purchase-order-details/purchase-order-details.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
 
+@ObjectType()
 @Entity('purchases_order')
 export class PurchasesOrder extends baseEntity {
     constructor(data?: Partial<PurchasesOrder>) {
@@ -24,6 +26,7 @@ export class PurchasesOrder extends baseEntity {
     @JoinColumn()
     staff: Relation<User>;
 
+    @Field()
     @Column()
     staffId: string
 
@@ -31,6 +34,7 @@ export class PurchasesOrder extends baseEntity {
     @JoinColumn()
     provider: Relation<Providers>;
 
+    @Field()
     @Column()
     providerId: string
 

@@ -1,29 +1,27 @@
-import { RoomReservation } from '../room-reservation/room-reservation.entity';
-import { baseEntity } from '../core/extends/base.entity';
-import { Roles } from '../core/enum';
 import {
     Entity,
     Column,
     Relation,
     ManyToOne,
     JoinColumn,
-    PrimaryColumn,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from '../users/users.entity';
-import { Providers } from '../providers/providers.entity';
 import { PurchasesOrder } from '../purchase-order/purchase-order.entity';
 import { Goods } from '../goods/goods.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
 
+@ObjectType()
 @Entity('purchases_order_details')
 export class PurchasesOrderDetail {
     constructor(data?: Partial<PurchasesOrderDetail>) {
         Object.assign(this, data);
     }
 
+    @Field()
     @PrimaryGeneratedColumn('uuid')
     id: string
 
+    @Field()
     @Column()
     quantity: number
 
@@ -31,6 +29,7 @@ export class PurchasesOrderDetail {
     @JoinColumn()
     purchaseOrder: Relation<PurchasesOrder>;
 
+    @Field()
     @Column()
     purchaseOrderId: string
 
@@ -38,6 +37,7 @@ export class PurchasesOrderDetail {
     @JoinColumn()
     goods: Relation<Goods>;
 
+    @Field()
     @Column()
     goodsId: string
 }

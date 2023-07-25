@@ -210,6 +210,10 @@ export class RoomReservationService {
 
     async getRoomReservation(id: string): Promise<RoomReservation> {
         const reservation = await this.roomReservationRepo.findOneBy({ id });
+        // const reservation = await this.roomReservationRepo.createQueryBuilder("room_reservation")
+        // .innerJoinAndSelect("room_reservation.bills","bills")
+        // .where("bills")
+        // .getManyAndCount();
         if (!reservation) {
             throw new BadRequestException("Room-Reservation not found");
         }
@@ -221,6 +225,16 @@ export class RoomReservationService {
         const [rows, count] = await this.roomReservationRepo.findAndCount({
             ...query
         })
+
+        // const [rows, count] = await this.roomReservationRepo.findAndCount({
+        //     where:{
+        //         bill:{
+        //             billDetails:{
+        //                 service:
+        //             }
+        //         }
+        //     }
+        // })
         return { totalPage: Math.ceil(count / input.limit), roomReservations: rows }
     }
 
