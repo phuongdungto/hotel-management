@@ -2,7 +2,7 @@ import { Field, InputType } from "@nestjs/graphql";
 import { IsArray, IsDate, IsEnum, IsNumber, IsOptional, IsString, IsUUID } from "class-validator";
 import { FilterPagination } from "../core/interfaces/fiter.interface";
 import { RoomPromotionDetails } from "../room-promotion-detail/room-promotion-detail.entity";
-import { roomPromotionDetailType } from "src/room-promotion-detail/room-promotion-detail.input";
+import { roomPromotionDetailType } from "../room-promotion-detail/room-promotion-detail.input";
 
 
 @InputType()

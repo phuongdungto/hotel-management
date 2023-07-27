@@ -13,11 +13,11 @@ export class ServicePromotionDetailsResolver {
 
     ) { }
 
-    @ResolveField(() => ServicePromotion)
+    @ResolveField(() => ServicePromotion, { nullable: true })
     async servicePromotions(@Parent() servivePromotionDetail: ServicePromotionDetails) {
         return await this.servicePromotionService.getServicePromotionWithServicePromotionDeltails(servivePromotionDetail.servicePromotionId)
     }
-    @ResolveField(() => Service)
+    @ResolveField(() => Service, { nullable: true })
     async services(@Parent() servivePromotionDetail: ServicePromotionDetails) {
         return await this.servicesService.getService(servivePromotionDetail.serviceId);
     }

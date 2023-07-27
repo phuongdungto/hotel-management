@@ -2,18 +2,18 @@ import { Args, Context, Mutation, Parent, Query, ResolveField, Resolver } from '
 import { RoomReservationService } from './room-reservation.service';
 import { RoomReservation } from './room-reservation.entity';
 import { createRoomReservationInput, getRoomReservationsInput, updateRoomReservationInput } from './room-reservation.input';
-import { ReqUser } from 'src/users/interfaces/user.interface';
+import { ReqUser } from '../users/interfaces/user.interface';
 import { UseGuards } from "@nestjs/common/decorators";
 import { AuthGuard } from '../auth/auth.guard';
 import { RoomReservationDetail } from '../room-reservation-detail/room-reservation-detail.entity';
 import { Customer } from '../customers/customers.entity';
-import { CustomersService } from 'src/customers/customers.service';
+import { CustomersService } from '../customers/customers.service';
 import { getRoomPromotionsType } from '../room-promotion/room-promotion.types';
 import { getRoomReservationsTypes } from './room-reservation.types';
-import { Bill } from 'src/bills/bills.entity';
-import { responseUntil } from 'src/core/utils/response.utils';
+import { Bill } from '../bills/bills.entity';
+import { responseUntil } from '../core/utils/response.utils';
 import { billType } from '../bills/bills.types';
-import { BillsService } from 'src/bills/bills.service';
+import { BillsService } from '../bills/bills.service';
 
 @Resolver(() => RoomReservation)
 export class RoomReservationResolver {

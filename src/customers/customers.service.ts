@@ -5,7 +5,7 @@ import { IsNull, Not, Repository } from 'typeorm';
 import { createCustomerIput, getCustomersInput, updateCustomerInput } from './customers.input';
 import { getCustomersType } from './customers.types';
 import { BuildPagination } from '../core/utils/pagination.utils';
-import { RoomReservation } from 'src/room-reservation/room-reservation.entity';
+import { RoomReservation } from '../room-reservation/room-reservation.entity';
 
 @Injectable()
 export class CustomersService {
@@ -66,18 +66,18 @@ export class CustomersService {
         await this.customerRepo.softDelete(id);
     }
 
-    async getReservationWithCustomerId(customerId:string){
+    async getReservationWithCustomerId(customerId: string) {
         let details = undefined;
         if (customerId) {
-            details = await this.reservationRepo.findBy({ customerId: customerId})
+            details = await this.reservationRepo.findBy({ customerId: customerId })
         }
         return details;
     }
 
-    async getCustomerWithReservationId(customerId:string){
+    async getCustomerWithReservationId(customerId: string) {
         let details = undefined;
         if (customerId) {
-            details = await this.customerRepo.findOneBy({ id: customerId})
+            details = await this.customerRepo.findOneBy({ id: customerId })
         }
         return details;
     }

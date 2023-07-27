@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { ServicePromotion } from './service-promotion.entity';
-import { ServicePromotionDetails } from 'src/service-promotion-details/service-promotion-detail.entity';
+import { ServicePromotionDetails } from '../service-promotion-details/service-promotion-detail.entity';
 import { EntityManager, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { createServicePromotionInput, getServicePromotionsInput, updateServicePromotionInput } from './service-promotion.input';
-import { BuildPagination } from 'src/core/utils/pagination.utils';
+import { BuildPagination } from '../core/utils/pagination.utils';
 import { getServicePromotionsType } from './service-promotion.types';
 
 @Injectable()

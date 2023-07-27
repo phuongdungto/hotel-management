@@ -2,8 +2,8 @@ import { Module, forwardRef } from '@nestjs/common';
 import { RoomReservationDetailResolver } from './room-reservation-detail.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoomReservationDetail } from './room-reservation-detail.entity';
-import { RoomsModule } from 'src/rooms/rooms.module';
-import { RoomReservationModule } from 'src/room-reservation/room-reservation.module';
+import { RoomsModule } from '../rooms/rooms.module';
+import { RoomReservationModule } from '../room-reservation/room-reservation.module';
 
 @Module({
   imports: [

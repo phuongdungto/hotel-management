@@ -2,7 +2,7 @@ import { Field, InputType } from "@nestjs/graphql";
 import { FilterPagination } from "../core/interfaces/fiter.interface";
 import { IsArray, IsEnum, IsNumber, IsOptional, IsString, IsUUID } from "class-validator";
 import { BillStatus } from "../core/enum";
-import { billDetailsType } from "src/bill-details/bill-detail.input";
+import { billDetailsType } from "../bill-details/bill-detail.input";
 
 @InputType()
 export class getBillsInput implements FilterPagination {
@@ -51,6 +51,18 @@ export class getBillsInput implements FilterPagination {
         this.page = 1;
         this.limit = 5
     }
+}
+
+@InputType()
+export class createBillInput {
+    @Field()
+    @IsUUID()
+    roomReservationId: string
+
+    @Field(() => [billDetailsType], { nullable: true })
+    @IsArray()
+    @IsOptional()
+    billDetails: billDetailsType[]
 }
 
 @InputType()

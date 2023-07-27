@@ -3,7 +3,7 @@ import { RoomsStyleService } from './rooms-style.service';
 import { createRoomStypeInput, getRoomStylesInput, updateRoomStyleInput } from './rooms-style.input';
 import { getRoomStylesType } from './rooms-style.types';
 import { RoomsStyle } from './room-style.entity';
-import { responseUntil } from 'src/core/utils/response.utils';
+import { responseUntil } from '../core/utils/response.utils';
 import { Rooms } from '../rooms/rooms.entity';
 import { RoomsService } from '../rooms/rooms.service';
 
