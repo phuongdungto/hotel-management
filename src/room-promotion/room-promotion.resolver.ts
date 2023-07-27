@@ -3,8 +3,8 @@ import { RoomPromotionService } from './room-promotion.service';
 import { createRoomPromotionInput, updateRoomPromotionInput, getRoomPromotionsInput } from './room-promotion.input';
 import { RoomPromotion } from './room-promotion.entity';
 import { getRoomPromotionsType } from './room-promotion.types';
-import { responseUntil } from 'src/core/utils/response.utils';
-import { RoomPromotionDetails } from 'src/room-promotion-detail/room-promotion-detail.entity';
+import { responseUntil } from '../core/utils/response.utils';
+import { RoomPromotionDetails } from '../room-promotion-detail/room-promotion-detail.entity';
 
 @Resolver(() => RoomPromotion)
 export class RoomPromotionResolver {

@@ -6,12 +6,12 @@ import { BillDetail } from '../bill-details/bill-detail.entity';
 import { billType, getBillsType } from './bills.types';
 import { getIds, minusDate } from '../core/utils/check.utils';
 import { RoomPromotionDetails } from '../room-promotion-detail/room-promotion-detail.entity';
-import { checkOutInput, getBillsInput, updateBillInput } from './bills.input';
+import { checkOutInput, createBillInput, getBillsInput, updateBillInput } from './bills.input';
 import { BuildPagination } from '../core/utils/pagination.utils';
 import { RoomReservation } from '../room-reservation/room-reservation.entity';
 import { Rooms } from '../rooms/rooms.entity';
 import { billDetailType } from '../bill-details/bill-detail.types';
-import { BillStatus, RoomStatus } from '../core/enum';
+import { ActionUpdateBill, BillStatus, RoomStatus } from '../core/enum';
 import { RoomReservationDetail } from '../room-reservation-detail/room-reservation-detail.entity';
 
 @Injectable()
@@ -24,67 +24,28 @@ export class BillsService {
         @InjectEntityManager() private readonly entityManager: EntityManager
     ) { }
 
-    async getBill(id: string): Promise<billType> {
+    async getBill(id: string): Promise<Bill> {
         let bill = await this.billRepo.findOne({
             where: { id },
-            relations: {
-                customer: true,
-                billDetails: {
-                    service: {
-                        servicePromotionDetails: true
-                    }
-                },
-                roomReservation: {
-                    roomReservationDetails: {
-                        room: {
-                            roomPromotionDetails: {
-                                roomPromotion: true
-                            }
-                        }
-                    }
-                }
-            }
         });
         if (!bill) {
             throw new BadRequestException("Bill not found")
         }
-        await this.formatBill(bill as billType);
-        bill.roomReservation.roomReservationDetails.map((item) => {
-            console.log(item.room)
-        });
-        return bill as billType
+        // await this.formatBill(bill as billType);
+        return bill
     }
 
     async getBills(input: getBillsInput): Promise<getBillsType> {
         const query = BuildPagination(Bill, input);
         let [rows, count] = await this.billRepo.findAndCount({
-            ...query,
-            relations: {
-                billDetails: {
-                    service: {
-                        servicePromotionDetails: true
-                    }
-                },
-                roomReservation: {
-                    roomReservationDetails: {
-                        room: {
-                            roomPromotionDetails: {
-                                roomPromotion: true
-                            }
-                        }
-                    }
-                }
-            }
+            ...query
         });
-        rows.forEach((bill: billType) => {
-            this.formatBill(bill)
-        })
-        return { totalPage: Math.ceil(count / input.limit), bills: rows as [billType] }
+        return { totalPage: Math.ceil(count / input.limit), bills: rows }
     }
 
-    async createBill(reservationId: string): Promise<Bill> {
+    async createBill(input: createBillInput): Promise<Bill> {
         const reservation = await this.reservationRepo.findOne({
-            where: { id: reservationId },
+            where: { id: input.roomReservationId },
             relations: {
                 roomReservationDetails: {
                     room: true
@@ -101,11 +62,22 @@ export class BillsService {
             const newbill = await transactionEntity.save(Bill, bill);
             reservation.billId = newbill.id;
             await transactionEntity.save(RoomReservation, reservation);
+            if (input.billDetails && input.billDetails.length > 0) {
+                const details = input.billDetails.map((item) => {
+                    return {
+                        ...item,
+                        billId: newbill.id
+                    }
+                });
+                console.log(details);
+                const newDetails = transactionEntity.getRepository(BillDetail).create(details);
+                await transactionEntity.insert(BillDetail, newDetails);
+            }
         })
-        return bill;
+        return await this.watchAndUpdateBill(bill.id, ActionUpdateBill.BILL);
     }
 
-    async updateBill(input: updateBillInput) {
+    async updateBill(input: updateBillInput): Promise<Bill> {
         const bill = await this.billRepo.findOne({
             where: { id: input.id },
             relations: {
@@ -114,15 +86,6 @@ export class BillsService {
                         servicePromotionDetails: true
                     }
                 },
-                roomReservation: {
-                    roomReservationDetails: {
-                        room: {
-                            roomPromotionDetails: {
-                                roomPromotion: true
-                            }
-                        }
-                    }
-                }
             }
         })
         if (!bill) {
@@ -130,7 +93,7 @@ export class BillsService {
         }
         const { billDetails, ...inputBill } = input
         Object.assign(bill, inputBill);
-        let billEntity = new Bill(bill)
+        const billEntity = new Bill(bill)
         await this.entityManager.transaction(async (transactionEntity) => {
             await transactionEntity.save(billEntity);
             if (billDetails.length > 0) {
@@ -145,27 +108,15 @@ export class BillsService {
                 await transactionEntity.insert(BillDetail, newDetails);
             }
         })
-        this.formatBill(billEntity as billType);
-        return billEntity as billType;
+        return await this.watchAndUpdateBill(bill.id, ActionUpdateBill.BILL);
     }
 
-    async checkOut(id: string): Promise<billType> {
+    async checkOut(id: string): Promise<Bill> {
         const bill = await this.billRepo.findOne({
             where: { id },
             relations: {
-                billDetails: {
-                    service: {
-                        servicePromotionDetails: true
-                    }
-                },
                 roomReservation: {
-                    roomReservationDetails: {
-                        room: {
-                            roomPromotionDetails: {
-                                roomPromotion: true
-                            }
-                        }
-                    }
+                    roomReservationDetails: true
                 }
             }
         });
@@ -185,8 +136,113 @@ export class BillsService {
             const newBill = await transactionEntity.save(bill);
             await transactionEntity.update(RoomReservation, bill.roomReservationId, { status: BillStatus.PAID })
         })
-        this.formatBill(bill as billType);
-        return bill as billType;
+        return bill;
+    }
+
+    async watchAndUpdateBill(billId: string, action: string): Promise<Bill> {
+        let bill = new Bill();
+        if (action === ActionUpdateBill.BOTH) {
+            bill = await this.billRepo.findOne({
+                where: { id: billId },
+                relations: {
+                    billDetails: {
+                        service: {
+                            servicePromotionDetails: true
+                        }
+                    },
+                    roomReservation: {
+                        roomReservationDetails: {
+                            room: {
+                                roomPromotionDetails: {
+                                    roomPromotion: true
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        if (action === ActionUpdateBill.BILL) {
+            bill = await this.billRepo.findOne({
+                where: { id: billId },
+                relations: {
+                    customer: true,
+                    billDetails: {
+                        service: {
+                            servicePromotionDetails: true
+                        }
+                    }
+                }
+            });
+        }
+        if (action === ActionUpdateBill.RESERVATION) {
+            bill = await this.billRepo.findOne({
+                where: { id: billId },
+                relations: {
+                    customer: true,
+                    roomReservation: {
+                        roomReservationDetails: {
+                            room: {
+                                roomPromotionDetails: {
+                                    roomPromotion: true
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        const newBill = await this.formatBill(bill, action);
+        return newBill;
+    }
+
+    async formatBill(bill: Bill, action: string) {
+        let totalRental: number = 0;
+        let totalService: number = 0;
+        let totalRoomPromotion: number = 0;
+        let totalServicePromotion: number = 0;
+        if (action === ActionUpdateBill.BOTH || action === ActionUpdateBill.RESERVATION) {
+            if (bill.roomReservation.roomReservationDetails && bill.roomReservation.roomReservationDetails.length !== 0) {
+                let cost = 1;
+                if (minusDate(bill.roomReservation.checkOut, bill.roomReservation.checkIn) > 1) {
+                    cost = minusDate(bill.roomReservation.checkOut, bill.roomReservation.checkIn)
+                }
+                bill.roomReservation.roomReservationDetails.forEach((item: any, index, arr) => {
+                    totalRental += item.room.price * cost;
+                    item.room.roomPromotionDetails.forEach((item1: RoomPromotionDetails) => {
+                        if (item1.dateStart <= bill.createdAt && item1.dateEnd >= bill.createdAt) {
+                            totalRoomPromotion += (item1.roomPromotion.percent * item.room.price * cost) / 100;
+                        }
+                    })
+                    // if (index === arr.length - 1) {
+                    //     delete item.room.roomPromotionDetails
+                    // }
+                })
+                bill.totalRental = totalRental;
+                bill.totalRoomPromotion = totalRoomPromotion;
+            }
+        }
+
+        if (action === ActionUpdateBill.BOTH || action === ActionUpdateBill.BILL) {
+            if (bill.billDetails && bill.billDetails.length !== 0) {
+                bill.billDetails.forEach((item: BillDetail) => {
+                    totalService += item.service.price * item.quantity;
+                    let percent: number = 0;
+                    item.service.servicePromotionDetails.forEach((item1) => {
+                        if (item1.dateStart <= bill.createdAt && item1.dateEnd >= bill.createdAt) {
+                            totalServicePromotion += (item1.percent * item.service.price * item.quantity) / 100;
+                            percent = item1.percent;
+                        }
+                    })
+                    // if (index === arr.length - 1) {
+                    //     delete item.service.servicePromotionDetails
+                    // }
+                })
+                bill.totalService = totalService;
+                bill.totalServicePromotion = totalServicePromotion;
+            }
+        }
+        return await this.billRepo.save(bill);
     }
 
     async getbillWithReservation(billId: string) {
@@ -197,56 +253,11 @@ export class BillsService {
         return bill;
     }
 
-    async formatBill(bill: billType) {
-        let cost = 1;
-        if (minusDate(bill.roomReservation.checkOut, bill.roomReservation.checkIn) > 1) {
-            cost = minusDate(bill.roomReservation.checkOut, bill.roomReservation.checkIn)
+    async getbillDetailsWithBill(billId: string) {
+        let details = undefined;
+        if (billId) {
+            details = await this.billDetailRepo.findBy({ billId });
         }
-        let totalRental: number = 0;
-        let totalService: number = 0;
-        let totalRoomPromotion: number = 0;
-        let totalServicePromotion: number = 0;
-        if (bill.roomReservation.roomReservationDetails.length !== 0) {
-            bill.roomReservation.roomReservationDetails.forEach((item: any, index, arr) => {
-                totalRental += item.room.price * cost;
-                let percent = 0;
-                let roomPromotion = null;
-                item.room.roomPromotionDetails.forEach((item1: RoomPromotionDetails) => {
-                    if (item1.dateStart <= bill.createdAt && item1.dateEnd >= bill.createdAt) {
-                        totalRoomPromotion += (item1.roomPromotion.percent * item.room.price * cost) / 100;
-                        percent = item1.roomPromotion.percent;
-                        roomPromotion = item1.roomPromotion.name;
-                    }
-                })
-                if (index === arr.length - 1) {
-                    delete item.room.roomPromotionDetails
-                }
-                item.room.percent = percent;
-                item.room.roomPromotion = roomPromotion;
-            })
-        }
-        if (bill.billDetails.length !== 0) {
-            bill.billDetails.forEach((item: billDetailType, index, arr) => {
-                totalService += item.service.price * item.quantity;
-                let percent: number = 0;
-                let servicePromotion = null;
-                item.service.servicePromotionDetails.forEach((item1, index1, arr1) => {
-                    if (item1.dateStart <= bill.createdAt && item1.dateEnd >= bill.createdAt) {
-                        totalServicePromotion += (item1.percent * item.service.price) / 100;
-                        percent = item1.percent;
-                        servicePromotion = item1.servicePromotion.name
-                    }
-                })
-                if (index === arr.length - 1) {
-                    delete item.service.servicePromotionDetails
-                }
-                item.service.percent = percent;
-                item.service.servicePromotion = servicePromotion;
-            })
-        }
-        bill.totalRental = totalRental;
-        bill.totalService = totalService;
-        bill.totalRoomPromotion = totalRoomPromotion;
-        bill.totalServicePromotion = totalServicePromotion;
+        return details;
     }
 }

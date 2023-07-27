@@ -5,8 +5,8 @@ import { createRoomInput, getRoomsInput, updateRoomInput } from './rooms.input';
 import { responseUntil } from '../core/utils/response.utils';
 import { getRoomsType, roomType } from './rooms.types';
 import { RoomsStyle } from '../rooms-style/room-style.entity';
-import { RoomsStyleService } from 'src/rooms-style/rooms-style.service';
-import { RoomPromotionDetails } from 'src/room-promotion-detail/room-promotion-detail.entity';
+import { RoomsStyleService } from '../rooms-style/rooms-style.service';
+import { RoomPromotionDetails } from '../room-promotion-detail/room-promotion-detail.entity';
 
 @Resolver(() => roomType)
 export class RoomsResolver {

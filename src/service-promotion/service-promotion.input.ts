@@ -1,7 +1,7 @@
 import { Field, InputType } from "@nestjs/graphql";
 import { IsArray, IsDate, IsEnum, IsOptional, IsString, IsUUID } from "class-validator";
-import { FilterPagination } from "src/core/interfaces/fiter.interface";
-import { servicePromotionDetailType } from "src/service-promotion-details/service-promotion-detail.input";
+import { FilterPagination } from "../core/interfaces/fiter.interface";
+import { servicePromotionDetailType } from "../service-promotion-details/service-promotion-detail.input";
 
 
 @InputType()

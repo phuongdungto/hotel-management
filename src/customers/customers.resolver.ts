@@ -3,8 +3,8 @@ import { CustomersService } from './customers.service';
 import { createCustomerIput, getCustomersInput, updateCustomerInput } from './customers.input';
 import { Customer } from './customers.entity';
 import { getCustomersType } from './customers.types';
-import { responseUntil } from 'src/core/utils/response.utils';
-import { RoomReservation } from 'src/room-reservation/room-reservation.entity';
+import { responseUntil } from '../core/utils/response.utils';
+import { RoomReservation } from '../room-reservation/room-reservation.entity';
 
 @Resolver(() => Customer)
 export class CustomersResolver {

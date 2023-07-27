@@ -3,7 +3,7 @@ import { GoodsService } from './goods.service';
 import { getGoodsListType } from './goods.types';
 import { Goods } from './goods.entity';
 import { createGoodsInput, getGoodsListInput, updateGoodsInput } from './goods.input';
-import { responseUntil } from 'src/core/utils/response.utils';
+import { responseUntil } from '../core/utils/response.utils';
 
 @Resolver(() => Goods)
 export class GoodsResolver {

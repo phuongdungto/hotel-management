@@ -23,6 +23,24 @@ export class Bill extends baseEntity {
         Object.assign(this, data);
     }
 
+    @Field()
+    @Column({ default: 0 })
+    totalRental: number
+
+    @Field()
+    @Column({ default: 0 })
+    totalService: number
+
+    @Field()
+    @Column({ default: 0 })
+    totalRoomPromotion: number
+
+    @Field()
+    @Column({ default: 0 })
+    totalServicePromotion: number
+
+    total: number
+
     @ManyToOne(() => User, user => user.bills)
     @JoinColumn()
     staff: Relation<User>;

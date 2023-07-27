@@ -5,7 +5,7 @@ import { EntityManager, Repository } from 'typeorm';
 import { createPurchaseOrderInput, getPurchaseOrdersInput, updatePurchaseOrderInput } from './purchase-order.input';
 import { PurchasesOrderDetail } from '../purchase-order-details/purchase-order-details.entity';
 import { getIds } from '../core/utils/check.utils';
-import { BuildPagination } from 'src/core/utils/pagination.utils';
+import { BuildPagination } from '../core/utils/pagination.utils';
 import { getPurchaseOdersType } from './purchase-order.types';
 
 @Injectable()

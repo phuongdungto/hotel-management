@@ -4,7 +4,7 @@ import { RoomReservation } from '../room-reservation/room-reservation.entity';
 import { RoomReservationService } from '../room-reservation/room-reservation.service';
 import { Rooms } from '../rooms/rooms.entity';
 import { RoomsService } from '../rooms/rooms.service';
-import { roomType } from 'src/rooms/rooms.types';
+import { roomType } from '../rooms/rooms.types';
 
 @Resolver(() => RoomReservationDetail)
 export class RoomReservationDetailResolver {

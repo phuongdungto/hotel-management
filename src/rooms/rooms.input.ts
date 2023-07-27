@@ -1,7 +1,7 @@
 import { Field, InputType } from "@nestjs/graphql";
 import { IsArray, IsEnum, IsNumber, IsNumberString, IsOptional, IsString, IsUUID } from "class-validator";
 import { RoomStatus } from "../core/enum";
-import { FilterPagination } from "src/core/interfaces/fiter.interface";
+import { FilterPagination } from "../core/interfaces/fiter.interface";
 
 @InputType()
 export class createRoomInput {

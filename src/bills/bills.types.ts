@@ -2,7 +2,7 @@ import { Field, ObjectType } from "@nestjs/graphql"
 import { RoomReservation } from "../room-reservation/room-reservation.entity"
 import { Bill } from "./bills.entity"
 import { billDetailType } from "../bill-details/bill-detail.types"
-import { BillDetail } from "src/bill-details/bill-detail.entity"
+import { BillDetail } from "../bill-details/bill-detail.entity"
 
 @ObjectType()
 export class billType extends Bill {
@@ -27,8 +27,8 @@ export class billType extends Bill {
 
 @ObjectType()
 export class getBillsType {
-    @Field(() => [billType])
-    bills: billType[]
+    @Field(() => [Bill])
+    bills: Bill[]
 
     @Field()
     totalPage: number

@@ -2,18 +2,18 @@ import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/g
 import { ServicesService } from './services.service';
 import { createServiceInput, getServicesInput, updateServiceInput } from './services.input';
 import { Service } from './service.entity';
-import { getServicesType } from './services.types';
+import { getServicesType, serviceType } from './services.types';
 import { responseUntil } from '../core/utils/response.utils';
-import { ServicePromotionDetails } from 'src/service-promotion-details/service-promotion-detail.entity';
+import { ServicePromotionDetails } from '../service-promotion-details/service-promotion-detail.entity';
 
-@Resolver(() => Service)
+@Resolver(() => serviceType)
 export class ServicesResolver {
     constructor(
         private serviceService: ServicesService,
     ) { }
 
-    @Query(returns => Service)
-    async getService(@Args('id') id: string): Promise<Service> {
+    @Query(returns => serviceType)
+    async getService(@Args('id') id: string): Promise<serviceType> {
         return await this.serviceService.getService(id);
     }
 
@@ -41,7 +41,7 @@ export class ServicesResolver {
         }
     }
 
-    @ResolveField(() => [ServicePromotionDetails])
+    @ResolveField(() => [ServicePromotionDetails], { nullable: true })
     async servicePromotionDetails(@Parent() service: Service) {
         return await this.serviceService.getPromotionDetailsWithId(service.id)
     }

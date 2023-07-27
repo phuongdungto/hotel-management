@@ -10,8 +10,9 @@ import { BuildPagination } from '../core/utils/pagination.utils';
 import { getRoomReservationsTypes } from './room-reservation.types';
 import { Rooms } from '../rooms/rooms.entity';
 import { getIds, minusDate } from '../core/utils/check.utils';
-import { BillStatus } from 'src/core/enum';
-import { BillDetail } from 'src/bill-details/bill-detail.entity';
+import { ActionUpdateBill, BillStatus } from '../core/enum';
+import { BillDetail } from '../bill-details/bill-detail.entity';
+import { BillsService } from '../bills/bills.service';
 
 @Injectable()
 export class RoomReservationService {
@@ -19,7 +20,8 @@ export class RoomReservationService {
         @InjectRepository(RoomReservation) private roomReservationRepo: Repository<RoomReservation>,
         @InjectRepository(RoomReservationDetail) private roomReservationDetailsRepo: Repository<RoomReservationDetail>,
         @InjectRepository(Rooms) private roomRepo: Repository<Rooms>,
-        @InjectEntityManager() private readonly entityManager: EntityManager
+        @InjectEntityManager() private readonly entityManager: EntityManager,
+        private billService: BillsService
     ) { }
 
     async createRoomReservation(input: any): Promise<RoomReservation> {
@@ -30,9 +32,9 @@ export class RoomReservationService {
         if (minusDate(currentDate, input.checkIn) > 0) {
             throw new BadRequestException("check in must not be less than current date")
         }
-        if (minusDate(input.checkIn, currentDate) > 2) {
-            throw new BadRequestException("Booking can only be made up to 2 days in advance")
-        }
+        // if (minusDate(input.checkIn, currentDate) > 2) {
+        //     throw new BadRequestException("Booking can only be made up to 2 days in advance")
+        // }
         const { roomReservationDetails, ...filter } = input;
         const reservation = new RoomReservation(filter);
         if (input.numberOfRoom !== roomReservationDetails.length) {
@@ -70,6 +72,7 @@ export class RoomReservationService {
                     .set({ status: 'occupied' })
                     .where({ id: In(roomIds) })
                     .execute()
+                this.billService.watchAndUpdateBill(bill.id, ActionUpdateBill.RESERVATION);
             }
             if (minusDate(input.checkIn, currentDate) > 0) {
                 await transactionEntity.createQueryBuilder()

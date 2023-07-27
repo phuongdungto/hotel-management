@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Service } from './service.entity';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { createServiceInput, getServicesInput, updateServiceInput } from './services.input';
 import { BuildPagination } from '../core/utils/pagination.utils';
 import { getServicesType, serviceType } from './services.types';
@@ -14,17 +14,61 @@ export class ServicesService {
         @InjectRepository(ServicePromotionDetails) private servicePromotionDetailsRepo: Repository<ServicePromotionDetails>
     ) { }
 
-    async getService(id: string): Promise<Service> {
-        const service = await this.serviceRepo.findOneBy({ id });
+    async getService(id: string): Promise<serviceType> {
+        const currentDate = new Date();
+        const service = await this.serviceRepo.findOne({
+            where: {
+                id
+            },
+            relations: {
+                servicePromotionDetails: {
+                    servicePromotion: true
+                }
+            }
+        });
         if (!service)
             throw new NotFoundException("Service not found");
-        return service;
+        let percent = 0;
+        let servicePromotion = null;
+        service.servicePromotionDetails.forEach((item) => {
+            if (item.dateStart <= currentDate && item.dateEnd >= currentDate) {
+                percent = item.percent;
+                servicePromotion = item.servicePromotion.name;
+            }
+        })
+        delete service.servicePromotionDetails
+        return {
+            ...service,
+            percent,
+            servicePromotion
+
+        };
     }
 
     async getServices(input: getServicesInput): Promise<getServicesType> {
         const query = BuildPagination(Service, input);
+        const currentDate = new Date();
         const [rows, count] = await this.serviceRepo.findAndCount({
-            ...query
+            ...query,
+            relations: {
+                servicePromotionDetails: {
+                    servicePromotion: true
+                }
+            }
+
+        })
+        rows.forEach((item1: serviceType) => {
+            let percent = 0;
+            let servicePromotion = null;
+            item1.servicePromotionDetails.forEach((item) => {
+                if (item.dateStart <= currentDate && item.dateEnd >= currentDate) {
+                    percent = item.percent;
+                    servicePromotion = item.servicePromotion.name;
+                }
+            })
+            item1.percent = percent;
+            item1.servicePromotion = servicePromotion;
+            delete item1.servicePromotionDetails
         })
         return { totalPage: Math.ceil(count / input.limit), services: rows as [serviceType] }
     }

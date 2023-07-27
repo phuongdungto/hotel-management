@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Init1688384759682 implements MigrationInterface {
-    name = 'Init1688384759682'
+export class Init1690285136662 implements MigrationInterface {
+    name = 'Init1690285136662'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
@@ -49,7 +49,7 @@ export class Init1688384759682 implements MigrationInterface {
         await queryRunner.query(`
             CREATE TABLE \`purchases_order_details\` (
                 \`id\` varchar(36) NOT NULL,
-                \`total\` int NOT NULL,
+                \`quantity\` int NOT NULL,
                 \`purchase_order_id\` varchar(255) NOT NULL,
                 \`goods_id\` varchar(255) NOT NULL,
                 PRIMARY KEY (\`id\`)
@@ -61,7 +61,6 @@ export class Init1688384759682 implements MigrationInterface {
                 \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
                 \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
                 \`deleted_at\` datetime(6) NULL,
-                \`total\` int NOT NULL,
                 \`staff_id\` varchar(255) NOT NULL,
                 \`provider_id\` varchar(255) NOT NULL,
                 PRIMARY KEY (\`id\`)
@@ -117,6 +116,8 @@ export class Init1688384759682 implements MigrationInterface {
                 \`id\` varchar(36) NOT NULL,
                 \`room_promotion_id\` varchar(255) NOT NULL,
                 \`room_id\` varchar(255) NOT NULL,
+                \`date_start\` datetime NOT NULL,
+                \`date_end\` datetime NOT NULL,
                 PRIMARY KEY (\`id\`)
             ) ENGINE = InnoDB
         `);
@@ -152,10 +153,11 @@ export class Init1688384759682 implements MigrationInterface {
                 \`number_of_room\` int NOT NULL,
                 \`check_in\` datetime NOT NULL,
                 \`check_out\` datetime NOT NULL,
-                \`total_rental\` int NOT NULL,
-                \`total_promotion\` int NOT NULL,
+                \`status\` enum ('unpaid', 'paid') NOT NULL DEFAULT 'unpaid',
                 \`customer_id\` varchar(255) NOT NULL,
                 \`staff_id\` varchar(255) NOT NULL,
+                \`bill_id\` varchar(255) NULL,
+                UNIQUE INDEX \`REL_7256a4b03b919f89943441082e\` (\`bill_id\`),
                 PRIMARY KEY (\`id\`)
             ) ENGINE = InnoDB
         `);
@@ -165,8 +167,15 @@ export class Init1688384759682 implements MigrationInterface {
                 \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
                 \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
                 \`deleted_at\` datetime(6) NULL,
+                \`total_rental\` int NOT NULL,
+                \`total_service\` int NOT NULL,
+                \`total_room_promotion\` int NOT NULL,
+                \`total_service_promotion\` int NOT NULL,
                 \`staff_id\` varchar(255) NOT NULL,
+                \`customer_id\` varchar(255) NOT NULL,
                 \`room_reservation_id\` varchar(255) NOT NULL,
+                \`status\` enum ('unpaid', 'paid') NOT NULL DEFAULT 'unpaid',
+                UNIQUE INDEX \`REL_5b721f00d66cad7917df1c410a\` (\`room_reservation_id\`),
                 PRIMARY KEY (\`id\`)
             ) ENGINE = InnoDB
         `);
@@ -188,49 +197,30 @@ export class Init1688384759682 implements MigrationInterface {
                 \`percent\` int NOT NULL,
                 \`service_promotion_id\` varchar(255) NOT NULL,
                 \`service_id\` varchar(255) NOT NULL,
+                \`date_start\` datetime NOT NULL,
+                \`date_end\` datetime NOT NULL,
+                PRIMARY KEY (\`id\`)
+            ) ENGINE = InnoDB
+        `);
+        await queryRunner.query(`
+            CREATE TABLE \`services\` (
+                \`id\` varchar(36) NOT NULL,
+                \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+                \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+                \`deleted_at\` datetime(6) NULL,
+                \`name\` varchar(255) NOT NULL,
+                \`price\` int NOT NULL,
                 PRIMARY KEY (\`id\`)
             ) ENGINE = InnoDB
         `);
         await queryRunner.query(`
             CREATE TABLE \`bill_details\` (
                 \`id\` varchar(36) NOT NULL,
-                \`price\` int NOT NULL,
-                \`number_of_services\` int NOT NULL,
-                \`total_price\` int NOT NULL,
-                \`promotion_price\` int NOT NULL,
+                \`quantity\` int NOT NULL,
                 \`bill_id\` varchar(255) NOT NULL,
                 \`service_id\` varchar(255) NOT NULL,
-                \`service_promotion_id\` varchar(255) NOT NULL,
                 PRIMARY KEY (\`id\`)
             ) ENGINE = InnoDB
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`rooms\` DROP COLUMN \`floor\`
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`rooms\` DROP COLUMN \`number_of_people\`
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`rooms\` DROP COLUMN \`status\`
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`rooms\` DROP COLUMN \`room_style_id\`
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`rooms\`
-            ADD \`floor\` int NOT NULL
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`rooms\`
-            ADD \`number_of_people\` int NOT NULL
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`rooms\`
-            ADD \`status\` enum ('clearing', 'occupied', 'reserved', 'available') NOT NULL DEFAULT 'available'
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`rooms\`
-            ADD \`room_style_id\` varchar(255) NOT NULL
         `);
         await queryRunner.query(`
             ALTER TABLE \`purchases_order_details\`
@@ -277,12 +267,20 @@ export class Init1688384759682 implements MigrationInterface {
             ADD CONSTRAINT \`FK_d1b22493fba76530f4b8252a010\` FOREIGN KEY (\`staff_id\`) REFERENCES \`users\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
+            ALTER TABLE \`room_reservation\`
+            ADD CONSTRAINT \`FK_7256a4b03b919f89943441082e6\` FOREIGN KEY (\`bill_id\`) REFERENCES \`bills\`(\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
+        `);
+        await queryRunner.query(`
             ALTER TABLE \`bills\`
             ADD CONSTRAINT \`FK_3ec2a05ea5ec43f782119542612\` FOREIGN KEY (\`staff_id\`) REFERENCES \`users\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE \`bills\`
-            ADD CONSTRAINT \`FK_5b721f00d66cad7917df1c410a4\` FOREIGN KEY (\`room_reservation_id\`) REFERENCES \`room_reservation\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION
+            ADD CONSTRAINT \`FK_fc82eff6557abfff698e671b77f\` FOREIGN KEY (\`customer_id\`) REFERENCES \`customers\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+        await queryRunner.query(`
+            ALTER TABLE \`bills\`
+            ADD CONSTRAINT \`FK_5b721f00d66cad7917df1c410a4\` FOREIGN KEY (\`room_reservation_id\`) REFERENCES \`room_reservation\`(\`id\`) ON DELETE CASCADE ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE \`service_promotion_details\`
@@ -290,7 +288,7 @@ export class Init1688384759682 implements MigrationInterface {
         `);
         await queryRunner.query(`
             ALTER TABLE \`service_promotion_details\`
-            ADD CONSTRAINT \`FK_dd319dce8774b66aed1571c58f0\` FOREIGN KEY (\`service_id\`) REFERENCES \`rooms\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION
+            ADD CONSTRAINT \`FK_dd319dce8774b66aed1571c58f0\` FOREIGN KEY (\`service_id\`) REFERENCES \`services\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE \`bill_details\`
@@ -298,18 +296,11 @@ export class Init1688384759682 implements MigrationInterface {
         `);
         await queryRunner.query(`
             ALTER TABLE \`bill_details\`
-            ADD CONSTRAINT \`FK_6d04860450b195b2a6e86015fb6\` FOREIGN KEY (\`service_id\`) REFERENCES \`rooms\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`bill_details\`
-            ADD CONSTRAINT \`FK_39104b93a3213415b92259a8eb3\` FOREIGN KEY (\`service_promotion_id\`) REFERENCES \`service_promotions\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION
+            ADD CONSTRAINT \`FK_6d04860450b195b2a6e86015fb6\` FOREIGN KEY (\`service_id\`) REFERENCES \`services\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
-            ALTER TABLE \`bill_details\` DROP FOREIGN KEY \`FK_39104b93a3213415b92259a8eb3\`
-        `);
         await queryRunner.query(`
             ALTER TABLE \`bill_details\` DROP FOREIGN KEY \`FK_6d04860450b195b2a6e86015fb6\`
         `);
@@ -326,7 +317,13 @@ export class Init1688384759682 implements MigrationInterface {
             ALTER TABLE \`bills\` DROP FOREIGN KEY \`FK_5b721f00d66cad7917df1c410a4\`
         `);
         await queryRunner.query(`
+            ALTER TABLE \`bills\` DROP FOREIGN KEY \`FK_fc82eff6557abfff698e671b77f\`
+        `);
+        await queryRunner.query(`
             ALTER TABLE \`bills\` DROP FOREIGN KEY \`FK_3ec2a05ea5ec43f782119542612\`
+        `);
+        await queryRunner.query(`
+            ALTER TABLE \`room_reservation\` DROP FOREIGN KEY \`FK_7256a4b03b919f89943441082e6\`
         `);
         await queryRunner.query(`
             ALTER TABLE \`room_reservation\` DROP FOREIGN KEY \`FK_d1b22493fba76530f4b8252a010\`
@@ -362,35 +359,10 @@ export class Init1688384759682 implements MigrationInterface {
             ALTER TABLE \`purchases_order_details\` DROP FOREIGN KEY \`FK_2a60b5baf58effa2425794e7b5e\`
         `);
         await queryRunner.query(`
-            ALTER TABLE \`rooms\` DROP COLUMN \`room_style_id\`
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`rooms\` DROP COLUMN \`status\`
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`rooms\` DROP COLUMN \`number_of_people\`
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`rooms\` DROP COLUMN \`floor\`
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`rooms\`
-            ADD \`room_style_id\` varchar(255) NOT NULL
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`rooms\`
-            ADD \`status\` enum ('clearing', 'occupied', 'reserved', 'available') NOT NULL DEFAULT 'available'
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`rooms\`
-            ADD \`number_of_people\` int NOT NULL
-        `);
-        await queryRunner.query(`
-            ALTER TABLE \`rooms\`
-            ADD \`floor\` int NOT NULL
-        `);
-        await queryRunner.query(`
             DROP TABLE \`bill_details\`
+        `);
+        await queryRunner.query(`
+            DROP TABLE \`services\`
         `);
         await queryRunner.query(`
             DROP TABLE \`service_promotion_details\`
@@ -399,7 +371,13 @@ export class Init1688384759682 implements MigrationInterface {
             DROP TABLE \`service_promotions\`
         `);
         await queryRunner.query(`
+            DROP INDEX \`REL_5b721f00d66cad7917df1c410a\` ON \`bills\`
+        `);
+        await queryRunner.query(`
             DROP TABLE \`bills\`
+        `);
+        await queryRunner.query(`
+            DROP INDEX \`REL_7256a4b03b919f89943441082e\` ON \`room_reservation\`
         `);
         await queryRunner.query(`
             DROP TABLE \`room_reservation\`

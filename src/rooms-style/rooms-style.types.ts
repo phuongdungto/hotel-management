@@ -1,5 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { baseType } from "src/core/extends/base.types";
+import { baseType } from "../core/extends/base.types";
 import { RoomsStyle } from "./room-style.entity";
 
 @ObjectType()
